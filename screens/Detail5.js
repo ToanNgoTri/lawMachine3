@@ -11,7 +11,6 @@ import {
   Dimensions,
   Modal,
   ActivityIndicator,
-  KeyboardAvoidingView
 } from 'react-native';
 import {Dirs, FileSystem} from 'react-native-file-access';
 import React, {useState, useEffect, useRef, useContext} from 'react';
@@ -227,21 +226,21 @@ export default function Detail() {
   }
   const ModalVisibleStatus = useContext(ModalStatus);
 
-  const {loading, content, info} = useSelector(state => state['read']);
-  const {loading3, info3} = useSelector(state => state['stackscreen']);
+  const {loading} = useSelector(state => state['read']);
+  const {info3} = useSelector(state => state['stackscreen']);
 
 
   async function callOneLaw() {
     // dùng để khi qua screen related Law khác khi quay về vẫn còn
     let info = await fetch(
-      `https://us-central1-project2-197c0.cloudfunctions.net/callOneLaw?screen=${route.params.screen}`,
+      `https://us-central1-project2-197c0.cloudfunctions.net/callOneLaw`,
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        // body:JSON.stringify({screen:state.lawName})
+        body:JSON.stringify({screen:route.params.screen})
       },
     );
 
@@ -254,7 +253,8 @@ export default function Detail() {
       setContent(res.content);
       setInfo(res.info);
     });
-  }, [info]);
+    
+  }, [loading]);
 
   useEffect(() => {
     if (!exists) {

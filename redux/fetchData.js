@@ -22,8 +22,7 @@ export const read = createSlice({
     },
 
     handle: (state,action) => {
-      state.content=action.payload.a;
-      // state.info=action.payload.a['info'];
+      state.content=action.payload;
       state.loading= false;
     },
 
@@ -101,17 +100,25 @@ export function* mySaga(state,action){
 
 
 
-    // let info = yield fetch(`http://192.168.1.4:5000/getonelaw`,{
-    let info = yield fetch(`https://us-central1-project2-197c0.cloudfunctions.net/callOneLaw?screen=${state.lawName}`,{
-      method: 'GET',
+    // let info = yield fetch(`https://us-central1-project2-197c0.cloudfunctions.net/callOneLaw?screen=${state.lawName}`,{
+    //   method: 'GET',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   // body:JSON.stringify({screen:state.lawName})
+    // })
+  
+
+    let info = yield fetch(`https://us-central1-project2-197c0.cloudfunctions.net/callOneLaw`,{
+      method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      // body:JSON.stringify({screen:state.lawName})
+      body:JSON.stringify({screen:state.lawName})
     })
-  
-  
+
     let a = yield info.json()
 
 
@@ -129,7 +136,7 @@ export function* mySaga1(state,action){
   try{
     yield put(loader1())
 
-    // let info = yield  fetch(`https://searchcontentfunction-pshgpplquq-uc.a.run.app?input=${state.input}`,{
+    // let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchContent?input=${state.input}`,{
     //   method: 'GET',
     //   headers: {
     //     Accept: 'application/json',
@@ -137,18 +144,18 @@ export function* mySaga1(state,action){
     //   },
     //   // body:JSON.stringify({input:state.input})
     // })
-    // let a = yield info.json()
+  
 
-    let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchContent?input=${state.input}`,{
-      method: 'GET',
+    let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchContent`,{
+      method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      // body:JSON.stringify({input:state.input})
+      body:JSON.stringify({input:state.input})
     })
-  
-  
+
+
     let b = yield info.json()
 
 
@@ -159,32 +166,28 @@ yield put(handle1(b))
 
 export function* mySaga2(state,action){
   try{
-    // yield put(loader2())
-
-    //     let info = yield  fetch(`http://192.168.1.4:5000/searchlaw`,{
-    //       method: 'POST',
-    //       headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body:JSON.stringify({input:state.input})
-    //     })
-      
-      
-    //     let b = yield info.json()
         
     yield put(loader2())
     
-    let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchLaw?input=${state.input}`,{
-      method: 'GET',
+    // let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchLaw?input=${state.input}`,{
+    //   method: 'GET',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   // body:JSON.stringify({input:state.input})
+    // })
+  
+
+    let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchLaw`,{
+      method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      // body:JSON.stringify({input:state.input})
+      body:JSON.stringify({input:state.input})
     })
-  
-  
+
     let b = yield info.json()
 
 
