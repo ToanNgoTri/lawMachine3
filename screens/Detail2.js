@@ -389,7 +389,7 @@ return lawObject
                   height: 40,
                   borderWidth:2,
                   borderColor:'#f67c1a',
-                  // width:40
+                  minWidth:40
                 }}
                 onPress={async () => {
                   Keyboard.dismiss();
