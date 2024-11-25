@@ -358,7 +358,8 @@ export function Detail1({}) {
                   borderRadius: 100,
                   height: 40,
                   borderWidth:2,
-                  borderColor:'#f67c1a'
+                  borderColor:'#f67c1a',
+                  minWidth:40,
     }}
                 onPress={() => {
                   // let inputSearchLawReg = input;
