@@ -11,6 +11,7 @@ import {createContext, useState} from 'react';
 import {Provider} from 'react-redux';
 import {store} from './redux/store';
 import dataOrg from './data/data.json';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // import './navigators/gesture-handler.native';
 const ModalStatus = createContext(); // lấy modalVisible status
 const InfoDownloaded = createContext(); //
@@ -41,15 +42,21 @@ function App() {
 
   
   return (
+    <SafeAreaProvider>
     <Provider store={store}>
       <ModalStatus.Provider value={{modalStatus, updateModalStatus}}>
       <RefOfSearchLaw.Provider value={{searchLawRef, updatesearchLawRef}}>
             <InfoDownloaded.Provider value={{info,updateInfo}}>
+      {/* <SafeAreaProvider> */}
+      {/* <SafeAreaView> */}
             <StackNavigator />
+    {/* </SafeAreaView> */}
+    {/* </SafeAreaProvider> */}
             </InfoDownloaded.Provider>
             </RefOfSearchLaw.Provider>
       </ModalStatus.Provider>
     </Provider>
+    </SafeAreaProvider>
   );
 }
 

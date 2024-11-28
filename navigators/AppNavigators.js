@@ -195,7 +195,7 @@ const AppNavigators = () => {
         },
         tabBarStyle: {
           postion: 'absolute',
-          height: 50,
+          height: 55,
           borderWidth: 0.5,
           borderColor: '#DDDDDD',
         },
@@ -207,7 +207,7 @@ const AppNavigators = () => {
           header: () => null,
           tabBarIcon: ({focused, color, size}) => {
             return (
-              <View style={{alignItems: 'center', top: -5, minWidth: 80}}>
+              <View style={{alignItems: 'center', top: -5, minWidth: 100}}>
                 <Ionicons
                   name="home-outline"
                   style={
@@ -241,7 +241,7 @@ const AppNavigators = () => {
           header: () => null,
           tabBarIcon: ({focused, color, size}) => {
             return (
-              <View style={{alignItems: 'center', top: -5, minWidth: 80}}>
+              <View style={{alignItems: 'center', top: -5, minWidth: 100}}>
                 <Ionicons
                   name="albums-outline"
                   style={
@@ -278,7 +278,7 @@ const AppNavigators = () => {
             return (
               <View
                 // style={focused ? {...styles.tabItemActive,width:widthTab,height:(widthTab>heightTab?'108%':'104%')} : styles.tabItemInactive}
-                style={{alignItems: 'center', top: -5, minWidth: 80}}>
+                style={{alignItems: 'center', top: -5, minWidth: 100}}>
                 <Ionicons
                   name="search-outline"
                   style={
@@ -317,7 +317,7 @@ const StackNavigator = () => {
 
   const netInfo = useNetInfo();
   let internetConnected = netInfo.isConnected;
-
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -330,13 +330,21 @@ const StackNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+      
+      screenOptions={{
+        headerStyle:{
+          height:200
+        }
+      }}
+      >
         <Stack.Screen
           name="HomeStack"
           component={AppNavigators}
           options={{
             // animationEnabled: false,
             header: () => null,
+            // headerStyle:{backgroundColor:'red'}
           }}
         />
 
@@ -344,11 +352,16 @@ const StackNavigator = () => {
           name={`accessLaw`}
           component={Detail5}
           options={({navigation}) => ({
+            // header:()=>{      <View style={{height: (Platform.OS === 'ios') ? 10 : 0,backgroundColor:'yellow',position:'relative'}}>
+            // </View>
+            // },
+            // headerStyle:{backgroundColor:'red',top:20},
             headerTitleAlign: 'center',
             animation: 'simple_push',
             animationTypeForReplace: 'push',
             headerLeft: () => (
               <TouchableOpacity
+
                 // onPress={() => {
                 //   navigation.goBack();
                 //   console.log(1);
@@ -361,38 +374,43 @@ const StackNavigator = () => {
                 //   navigation.goBack();
                 //   console.log(3);
                 // }}
-                style={{}}>
+
+                >
                 <Ionicons
                   name="chevron-back-outline"
                   style={styles.IconInfo}></Ionicons>
               </TouchableOpacity>
             ), // headerStyle: { backgroundColor: 'black',alignItems:'center',justifyContent:'flex-end',display:'flex',padding:100 },
-            headerTitle: props => (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: 'green',
-                  height: '60%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  overflow: 'hidden',
-                  borderRadius: 30,
-                }}
-                // onPress={() => {
-                //   navigation.popToTop();
-                //   console.log(1);
-                // }}
-                onPressIn={() => {
-                  navigation.popToTop();
-                  console.log(2);
-                }}
-                // onPressOut={() => {
-                //   navigation.popToTop();
-                //   console.log(3);
-                // }}
-                >
-                <Image source={require('../assets/t.png')}></Image>
-              </TouchableOpacity>
-            ),
+            // headerTitle: props => (
+            //   <TouchableOpacity
+            //     style={{
+            //       backgroundColor: 'red',
+            //       // height: '60%',
+            //       alignItems: 'center',
+            //       justifyContent: 'center',
+            //       overflow: 'hidden',
+            //       borderRadius: 30,
+            //       // marginBottom:40
+            //       // paddingTop:5,
+            //       // paddingBottom:5
+            //     }}
+            //     // onPress={() => {
+            //     //   navigation.popToTop();
+            //     //   console.log(1);
+            //     // }}
+            //     onPressIn={() => {
+            //       navigation.popToTop();
+            //       console.log(2);
+            //     }}
+            //     // onPressOut={() => {
+            //     //   navigation.popToTop();
+            //     //   console.log(3);
+            //     // }}
+            //     >
+            //     <Image style={{alignItems:'center',justifyContent:'center',backgroundColor:'red'}} source={require('../assets/t.png')}></Image>
+            //   </TouchableOpacity>
+            // ),
+            headerTitle:()=> <></>,
             headerRight: () => (
               <View style={{alignItems: 'center'}}>
                 <TouchableOpacity

@@ -9,7 +9,8 @@ import {
   Image,
   Keyboard,
   Animated,
-  Dimensions
+  Dimensions,
+  
 } from 'react-native';
 import {useState, useEffect,useRef} from 'react';
 import dataOrg from '../data/data.json';
@@ -17,6 +18,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dirs, FileSystem } from 'react-native-file-access';
 import { useScrollToTop } from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 export default function Home({}) {
 
   const navigation = useNavigation();
@@ -158,7 +161,8 @@ useEffect(() => {
 
 
   return (
-    <>
+    <SafeAreaView>
+
 
       <View
         style={{
@@ -389,7 +393,8 @@ useEffect(() => {
         ))
       )
       } */}
-    </>
+          </SafeAreaView>
+
   );
 }
 

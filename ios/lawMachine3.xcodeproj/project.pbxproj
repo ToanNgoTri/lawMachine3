@@ -480,6 +480,8 @@
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-lawMachine3-lawMachine3Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEVELOPMENT_TEAM = B99KVTSXJ8;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -507,7 +509,9 @@
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-lawMachine3-lawMachine3Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = B99KVTSXJ8;
 				INFOPLIST_FILE = lawMachine3Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -533,6 +537,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B99KVTSXJ8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = lawMachine3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -561,6 +566,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B99KVTSXJ8;
 				INFOPLIST_FILE = lawMachine3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (

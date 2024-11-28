@@ -15,7 +15,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useNetInfo} from '@react-native-community/netinfo';
 import React, {useEffect, useState, useRef, useContext} from 'react';
 import { useNavigation,useScrollToTop} from '@react-navigation/native';
-// import {InfoDownloaded} from '../App';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 export function Detail1({}) {
@@ -50,6 +50,8 @@ export function Detail1({}) {
   const ScrollViewToScroll = useRef(null);
 
   useScrollToTop(ScrollViewToScroll)
+
+  const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
 
 
   const dispatch = useDispatch();
@@ -228,7 +230,7 @@ export function Detail1({}) {
       <ScrollView
             ref={ScrollViewToScroll}
         keyboardShouldPersistTaps="handled"
-        style={{backgroundColor: '#EEEFE4'}}>
+        style={{backgroundColor: '#EEEFE4',paddingTop: insets.top}}>
         <View style={{backgroundColor: 'green'}}>
           <Text style={styles.titleText}>{`Tìm kiếm nội dung`}</Text>
 
@@ -852,6 +854,9 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingLeft: 12,
     borderRadius: 15,
+    paddingTop:10,
+    paddingBottom:10
+
   },
   containerBtb: {
     width: '15%',

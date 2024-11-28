@@ -11,6 +11,7 @@ import {
   Dimensions,
   Modal,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {Dirs, FileSystem} from 'react-native-file-access';
 import React, {useState, useEffect, useRef, useContext} from 'react';
@@ -22,6 +23,7 @@ import {ModalStatus} from '../App';
 import {useSelector, useDispatch} from 'react-redux';
 import {InfoDownloaded} from '../App';
 import {loader, noLoading} from '../redux/fetchData';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 let TopUnitCount; // là đơn vị lớn nhất vd là 'phần thứ' hoặc chương
 let articleCount = 0;
@@ -628,7 +630,7 @@ export default function Detail() {
 
   let transY = animatedForNavi.interpolate({
     inputRange: [-100, 0, 80, 90, 100],
-    outputRange: [0, 0, -44, 0, 0],
+    outputRange: [0, 0, -50, 0, 0],
   });
 
   let transX = animatedForNavi.interpolate({
@@ -643,7 +645,7 @@ export default function Detail() {
 
   let MagginBottom = animatedForNavi.interpolate({
     inputRange: [-100, 0, 80, 90, 100],
-    outputRange: [35, 35, 70, 0, 0],
+    outputRange: [40, 40, 78, 0, 0],
   });
 
   useEffect(() => {
@@ -849,6 +851,8 @@ export default function Detail() {
   //   );
   // };
 
+
+  
   return (
     <>
       {loading && (
@@ -876,7 +880,6 @@ export default function Detail() {
           <ActivityIndicator size="large" color="white"></ActivityIndicator>
         </View>
       )}
-
       <Modal
         presentationStyle="pageSheet"
         animationType="slide"
@@ -898,14 +901,14 @@ export default function Detail() {
                 height: 60,
                 // borderBottomWidth:3,
                 borderColor: '#2F4F4F',
-                shadowColor: 'black',
-                shadowOpacity: 1,
-                shadowOffset: {
-                  width: 10,
-                  height: 10,
-                },
-                shadowRadius: 4,
-                elevation: 10,
+                // shadowColor: 'gray',
+                // shadowOpacity: 1,
+                // shadowOffset: {
+                //   width: 2,
+                //   height: 2,
+                // },
+                // shadowRadius: 4,
+                // elevation: 1,
               }}>
               <TouchableOpacity
                 onPress={() => {
@@ -1265,11 +1268,11 @@ export default function Detail() {
                   // borderColor:'#555555',
                   // borderWidth:1,
 
-                  shadowColor: 'black',
+                  shadowColor: 'gray',
                   shadowOpacity: 1,
                   shadowOffset: {
-                    width: 5,
-                    height: 5,
+                    width: 1,
+                    height: 1,
                   },
                   shadowRadius: 4,
                   elevation: 2,
@@ -1290,6 +1293,7 @@ export default function Detail() {
           </View>
         </ScrollView>
       </Modal>
+
 
       <Animated.View style={{marginBottom: MagginBottom}}>
         <ScrollView
@@ -1890,8 +1894,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     bottom: 0,
     backgroundColor: '#00CD66',
-    height: 35,
-    paddingTop: 2,
+    height: 40,
+    paddingTop: 3,
+    paddingBottom:3,
     zIndex: 10,
     borderTopWidth: 2,
     borderTopColor: 'black',
@@ -1996,7 +2001,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     display: 'flex',
     right: 0,
-    marginBottom: 35,
+    marginBottom: 40,
   },
   listItem: {
     display: 'flex',

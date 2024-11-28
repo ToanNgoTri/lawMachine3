@@ -16,7 +16,7 @@ import {useNavigation,useScrollToTop} from '@react-navigation/native';
 import React, {useEffect, useState, useRef, useContext} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
 import CheckBox from 'react-native-check-box';
-// import {InfoDownloaded} from '../App';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 export function Detail2({}) {
@@ -45,7 +45,7 @@ export function Detail2({}) {
 
   const navigation = useNavigation();
 
-
+  const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
 
   const textInput = useRef(null)
 
@@ -229,6 +229,7 @@ return lawObject
 
   return (
     <>
+
       {(loading2 || loading3|| !internetConnected) && (
         <View
           style={{
@@ -258,9 +259,10 @@ return lawObject
       )}
 
       <ScrollView
+
       ref={ScrollViewToScroll}
         keyboardShouldPersistTaps='handled'
-        style={{backgroundColor: '#EEEFE4'}}>
+        style={{backgroundColor: '#EEEFE4',paddingTop: insets.top}}>
         <View style={{backgroundColor: 'green'}}>
           <Text style={styles.titleText}>{`Tìm kiếm văn bản`}</Text>
 
@@ -477,7 +479,7 @@ return lawObject
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{marginTop: 1}}>
+        <View style={{marginTop: 1,flex:1}}>
           { ( !info3.length && info == null )? (
             <></>
           ) : Object.keys(SearchResult).length || info3.length || info.length? (
@@ -844,6 +846,8 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingLeft: 12,
     borderRadius: 15,
+    paddingTop:10,
+    paddingBottom:10
   },
   containerBtb: {
     width: '15%',
