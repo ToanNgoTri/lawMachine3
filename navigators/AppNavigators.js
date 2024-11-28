@@ -2,9 +2,9 @@ import {NavigationContainer} from '@react-navigation/native';
 // import {TouchableOpacity} from 'react-native-gesture-handler'
 import {useSelector, useDispatch} from 'react-redux';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 // import database from '@react-native-firebase/database';
-import { useEffect, useContext} from 'react';
+import {useEffect, useContext} from 'react';
 import Home from '../screens/Home';
 import {Detail1} from '../screens/Detail1';
 import {Detail2} from '../screens/Detail2';
@@ -16,7 +16,7 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,  
+  TouchableOpacity,
   Pressable,
   Dimensions,
   Button,
@@ -44,7 +44,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // const AppNavigators = () => {
 //   const layout = useWindowDimensions();
 //   const [index, setIndex] = useState(0);
-  
+
 // // let index = 1
 //   // const RefLawSearch = useContext(RefOfSearchLaw);
 
@@ -68,7 +68,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // //           renderTabBar={({route})=>{
 
 // // console.log('props',props);
-
 
 // //             return (
 // //               <View>
@@ -116,10 +115,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // //               </View>
 // //             );
 
-
 // //           }}
 //           renderTabBarItem={({route}) => {
-            
+
 //             let focus = props.navigationState.routes[index].key == route.key
 
 //             return (
@@ -173,7 +171,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //       renderScene={renderScene}
 //       onIndexChange={setIndex}
 //       initialLayout={{width: layout.width}}
-     
+
 //     />
 //   );
 // };
@@ -181,25 +179,27 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Tab = createMaterialTopTabNavigator();
 
 const AppNavigators = () => {
-
   return (
     <Tab.Navigator
-    
-    tabBarPosition='bottom'
+      tabBarPosition="bottom"
       screenOptions={({route}) => ({
-        tabBarPressColor:'#FFCC66',
+        tabBarPressColor: '#FFCC66',
         animationEnabled: false,
         animation: 'shift',
         lazy: true,
-        tabBarIndicatorStyle:{backgroundColor:'#336600',top:-1,margin:0,padding:0},
+        tabBarIndicatorStyle: {
+          backgroundColor: '#336600',
+          top: -1,
+          margin: 0,
+          padding: 0,
+        },
         tabBarStyle: {
           postion: 'absolute',
-          height:50,
-          borderWidth:.5,
-          borderColor:'#DDDDDD',
+          height: 50,
+          borderWidth: 0.5,
+          borderColor: '#DDDDDD',
         },
-      })}
-    >
+      })}>
       <Tab.Screen
         name="Home"
         component={Home}
@@ -207,10 +207,7 @@ const AppNavigators = () => {
           header: () => null,
           tabBarIcon: ({focused, color, size}) => {
             return (
-              <View
-                style={{alignItems: 'center',top:-5, minWidth: 80
-                }}
-                >
+              <View style={{alignItems: 'center', top: -5, minWidth: 80}}>
                 <Ionicons
                   name="home-outline"
                   style={
@@ -219,7 +216,9 @@ const AppNavigators = () => {
                 <Text
                   style={{
                     ...(focused ? styles.IconActive : styles.IconInActive),
-                    fontSize: 13,fontWeight:'bold',bottom:2
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    bottom: 2,
                   }}>
                   Đã tải xuống
                 </Text>
@@ -232,8 +231,7 @@ const AppNavigators = () => {
           },
         }}
         listeners={{
-          tabPress: props => {
-          },
+          tabPress: props => {},
         }}
       />
       <Tab.Screen
@@ -243,8 +241,7 @@ const AppNavigators = () => {
           header: () => null,
           tabBarIcon: ({focused, color, size}) => {
             return (
-              <View
-                style={{alignItems: 'center',top:-5, minWidth: 80}}>
+              <View style={{alignItems: 'center', top: -5, minWidth: 80}}>
                 <Ionicons
                   name="albums-outline"
                   style={
@@ -253,7 +250,9 @@ const AppNavigators = () => {
                 <Text
                   style={{
                     ...(focused ? styles.IconActive : styles.IconInActive),
-                    fontSize: 13,fontWeight:'bold',bottom:2
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    bottom: 2,
                   }}>
                   Tìm văn bản
                 </Text>
@@ -279,7 +278,7 @@ const AppNavigators = () => {
             return (
               <View
                 // style={focused ? {...styles.tabItemActive,width:widthTab,height:(widthTab>heightTab?'108%':'104%')} : styles.tabItemInactive}
-                style={{alignItems: 'center',top:-5, minWidth: 80}}>
+                style={{alignItems: 'center', top: -5, minWidth: 80}}>
                 <Ionicons
                   name="search-outline"
                   style={
@@ -288,7 +287,9 @@ const AppNavigators = () => {
                 <Text
                   style={{
                     ...(focused ? styles.IconActive : styles.IconInActive),
-                    fontSize: 13,fontWeight:'bold',bottom:2
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    bottom: 2,
                   }}>
                   Tìm nội dung
                 </Text>
@@ -312,58 +313,55 @@ const AppNavigators = () => {
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
-
   const ModalVisibleStatus = useContext(ModalStatus);
 
   const netInfo = useNetInfo();
   let internetConnected = netInfo.isConnected;
-  
 
   const dispatch = useDispatch();
 
-    
-     useEffect(() => {
-      if(internetConnected){
+  useEffect(() => {
+    if (internetConnected) {
+      // dispatch({type: 'stackscreen'})
+    }
 
-        // dispatch({type: 'stackscreen'})
-      }
+    // callAllSearchLaw().then(res=>inf.updateInfo(res))
+  }, [internetConnected]);
 
-      // callAllSearchLaw().then(res=>inf.updateInfo(res))
-    }, [internetConnected])
-     
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name="HomeStack"
           component={AppNavigators}
-          
           options={{
             // animationEnabled: false,
-            header: () => null}}
+            header: () => null,
+          }}
         />
 
         <Stack.Screen
           name={`accessLaw`}
           component={Detail5}
           options={({navigation}) => ({
-            
             headerTitleAlign: 'center',
-            animation:'simple_push',
+            animation: 'simple_push',
             animationTypeForReplace: 'push',
             headerLeft: () => (
-              <Pressable 
-              onPress={() =>{ navigation.goBack()
-                               console.log(1);
- }}
- onPressIn={() =>{ navigation.goBack()
-  console.log(2);
-}}
-onPressOut={() =>{ navigation.goBack()
-  console.log(3);
-}}
-style={{}}
-              >
+              <Pressable
+                onPress={() => {
+                  navigation.goBack();
+                  console.log(1);
+                }}
+                onPressIn={() => {
+                  navigation.goBack();
+                  console.log(2);
+                }}
+                onPressOut={() => {
+                  navigation.goBack();
+                  console.log(3);
+                }}
+                style={{}}>
                 <Ionicons
                   name="chevron-back-outline"
                   style={styles.IconInfo}></Ionicons>
@@ -379,16 +377,18 @@ style={{}}
                   overflow: 'hidden',
                   borderRadius: 30,
                 }}
-                onPress={() => {navigation.popToTop()
+                onPress={() => {
+                  navigation.popToTop();
                   console.log(1);
                 }}
-                onPressIn={() => {navigation.popToTop()
+                onPressIn={() => {
+                  navigation.popToTop();
                   console.log(2);
                 }}
-                onPressOut={() => {navigation.popToTop()
+                onPressOut={() => {
+                  navigation.popToTop();
                   console.log(3);
-                }}
-               >
+                }}>
                 <Image source={require('../assets/t.png')}></Image>
               </Pressable>
             ),
@@ -400,10 +400,9 @@ style={{}}
                     // navigation.navigate('Search')
                     ModalVisibleStatus.updateModalStatus(true);
                   }}
-                  onPressIn={() => { ModalVisibleStatus.updateModalStatus(true);
-                  }}
-  >
-                    
+                  onPressIn={() => {
+                    ModalVisibleStatus.updateModalStatus(true);
+                  }}>
                   <Ionicons
                     name="document-text-outline"
                     style={styles.IconInfo}></Ionicons>

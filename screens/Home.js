@@ -191,8 +191,7 @@ useEffect(() => {
           style={inputSearchLaw ? styles.inputSearchArea : styles.placeholder}
           placeholder="Nhập tên, Số văn bản, Trích yếu . . ."
           placeholderTextColor={'gray'}
-          
-          keyboardAppearance=""></TextInput>
+        ></TextInput>
         <TouchableOpacity
           onPress={() => {
             setInputSearchLaw('');
