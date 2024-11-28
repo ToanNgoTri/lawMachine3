@@ -63,8 +63,8 @@ export default function Home({}) {
 
   useEffect(() => {
     setSearchLawResult(
-      Content &&
-        Object.keys(Content).filter(item => {
+      Info &&
+        Object.keys(Info).filter(item => {
           if (
             inputSearchLaw.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\s?)/gim)
           ) {
@@ -145,7 +145,7 @@ useEffect(() => {
         setInfo({...dataOrg['info'],...cont.info})
 
       }else{
-        // setContent(dataOrg['LawContent'])
+        // setCsontent(dataOrg['LawContent'])
         setInfo(dataOrg['info'])
       }
 
