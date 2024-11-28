@@ -348,27 +348,27 @@ const StackNavigator = () => {
             animation: 'simple_push',
             animationTypeForReplace: 'push',
             headerLeft: () => (
-              <Pressable
-                onPress={() => {
-                  navigation.goBack();
-                  console.log(1);
-                }}
+              <TouchableOpacity
+                // onPress={() => {
+                //   navigation.goBack();
+                //   console.log(1);
+                // }}
                 onPressIn={() => {
                   navigation.goBack();
                   console.log(2);
                 }}
-                onPressOut={() => {
-                  navigation.goBack();
-                  console.log(3);
-                }}
+                // onPressOut={() => {
+                //   navigation.goBack();
+                //   console.log(3);
+                // }}
                 style={{}}>
                 <Ionicons
                   name="chevron-back-outline"
                   style={styles.IconInfo}></Ionicons>
-              </Pressable>
+              </TouchableOpacity>
             ), // headerStyle: { backgroundColor: 'black',alignItems:'center',justifyContent:'flex-end',display:'flex',padding:100 },
             headerTitle: props => (
-              <Pressable
+              <TouchableOpacity
                 style={{
                   backgroundColor: 'green',
                   height: '60%',
@@ -377,36 +377,38 @@ const StackNavigator = () => {
                   overflow: 'hidden',
                   borderRadius: 30,
                 }}
-                onPress={() => {
-                  navigation.popToTop();
-                  console.log(1);
-                }}
+                // onPress={() => {
+                //   navigation.popToTop();
+                //   console.log(1);
+                // }}
                 onPressIn={() => {
                   navigation.popToTop();
                   console.log(2);
                 }}
-                onPressOut={() => {
-                  navigation.popToTop();
-                  console.log(3);
-                }}>
+                // onPressOut={() => {
+                //   navigation.popToTop();
+                //   console.log(3);
+                // }}
+                >
                 <Image source={require('../assets/t.png')}></Image>
-              </Pressable>
+              </TouchableOpacity>
             ),
             headerRight: () => (
               <View style={{alignItems: 'center'}}>
-                <Pressable
+                <TouchableOpacity
                   style={styles.iconInfoContainer}
-                  onPress={() => {
-                    // navigation.navigate('Search')
-                    ModalVisibleStatus.updateModalStatus(true);
-                  }}
+                  // onPress={() => {
+                  //   // navigation.navigate('Search')
+                  //   ModalVisibleStatus.updateModalStatus(true);
+                  // }}
                   onPressIn={() => {
                     ModalVisibleStatus.updateModalStatus(true);
-                  }}>
+                  }}
+                  >
                   <Ionicons
                     name="document-text-outline"
                     style={styles.IconInfo}></Ionicons>
-                </Pressable>
+                </TouchableOpacity>
               </View>
             ),
           })}

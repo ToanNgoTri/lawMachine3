@@ -11,7 +11,7 @@ import {createContext, useState} from 'react';
 import {Provider} from 'react-redux';
 import {store} from './redux/store';
 import dataOrg from './data/data.json';
-import './navigators/gesture-handler.native';
+// import './navigators/gesture-handler.native';
 const ModalStatus = createContext(); // lấy modalVisible status
 const InfoDownloaded = createContext(); //
 const RefOfSearchLaw = createContext(); //
