@@ -145,7 +145,7 @@ useEffect(() => {
         setInfo({...dataOrg['info'],...cont.info})
 
       }else{
-        // setCsontent(dataOrg['LawContent'])
+        // setContent(dataOrg['LawContent'])
         setInfo(dataOrg['info'])
       }
 
