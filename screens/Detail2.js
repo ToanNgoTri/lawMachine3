@@ -26,6 +26,7 @@ export function Detail2({}) {
   const {loading3, info3} = useSelector(state => state['stackscreen']);
   // console.log('info3',info3);
   const [input, setInput] = useState(undefined);
+  const [valueInput, setValueInput] = useState('');
 
   const [warning, setWanring] = useState(false);
   // const inf = useContext(InfoDownloaded);
@@ -86,6 +87,82 @@ export function Detail2({}) {
       
     }
   }, [info3])
+
+
+  function highlight(para, word, i2) {
+    // console.log('para',para);
+    if (para) {
+      // đôi khi Điều ... không có khoản (nội dung chính trong điều) thì điều này giúp không load ['']
+      if (word.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\/)/gim)) {
+        let inputRexgex = para.match(new RegExp(String(word), 'igmu'));
+        // let inputRexgex = para[0].match(new RegExp('hội', 'igmu'));
+        if (inputRexgex) {
+          let searchedPara = para
+            .split(new RegExp(String(word), 'igmu'))
+            // .split(new RegExp('hội', 'igmu'))
+            .reduce((prev, current, i) => {
+              if (!i) {
+                return [<Text style={ i2.match(/aa/)?{...styles.chapterText}:{}
+                } key={`${i}xa`}
+>{current}</Text>];
+              }
+
+
+              return prev.concat(
+                <React.Fragment
+                key={`${i}htth`}
+                >
+                  <Text
+                    style={
+                      // searchResultCount - inputRexgex.length + i - 1 <
+                      //   currentSearchPoint &&
+                      // searchResultCount - inputRexgex.length + i >=
+                      //   currentSearchPoint
+                      //   ? styles.highlight1
+                      //   : styles.highlight
+                      
+                        
+                      i2.match(/aa/)?{...styles.chapterText,backgroundColor:'yellow'}:{backgroundColor:'yellow'}
+                      
+                    }
+                    key={`${i}gmi`}
+                    >
+                    {inputRexgex[i - 1]}
+                  </Text>
+              </React.Fragment> ,
+                <Text
+                key={`${i}vvv`}
+                  style={
+                    
+                    i2.match(/aa/)?{...styles.chapterText}:{}
+                      
+                  //   {
+                  //   position: 'relative',
+                  //   display: 'flex',
+                  //   margin: 0,
+                  //   lineHeight: 23,
+                    
+                  // }
+                  }>
+                  {current}
+                </Text>,
+              );
+            }, []);
+          return <View ><Text >{searchedPara}</Text></View>;
+          // return <View >{searchedPara}</View>;
+          // return <Text >{searchedPara}</Text>;
+        } else {
+          
+          return para
+        }
+      } else {
+        return para;
+      }
+
+      // }
+    }
+  }
+
   
   function convertResult(info){
     let lawObject = {};
@@ -262,8 +339,8 @@ return lawObject
 
       ref={ScrollViewToScroll}
         keyboardShouldPersistTaps='handled'
-        style={{backgroundColor: '#EEEFE4',paddingTop: insets.top}}>
-        <View style={{backgroundColor: 'green'}}>
+        style={{backgroundColor: '#EEEFE4',}}>
+        <View style={{backgroundColor: 'green',paddingTop: insets.top}}>
           <Text style={styles.titleText}>{`Tìm kiếm văn bản`}</Text>
 
           <View style={styles.inputContainer}>
@@ -343,7 +420,7 @@ return lawObject
                       setWanring(true)
                     }else{
                       dispatch({type: 'searchLaw', input: input});
-  
+                      setValueInput(input)
                     }
                     setChoosenKindLaw([0, 1, 2]);
                   }
@@ -400,6 +477,7 @@ return lawObject
                     setWanring(true)
                   }else{
                     dispatch({type: 'searchLaw', input: input});
+                    setValueInput(input)
 
                   }
                   setChoosenKindLaw([0, 1, 2]);
@@ -491,8 +569,8 @@ return lawObject
                     paddingBottom: 10,
                     paddingTop: 10,
                     justifyContent: 'center',
-                    backgroundColor: '#F9CC76',
-                    marginBottom: 6,
+                    backgroundColor: i%2 ? 'white':'#DDDDDD', // #F9CC76
+                    // marginBottom: 6,
                   }}
                   onPress={() => {
                     // navigation.navigate(`${detailInfo._id}`)
@@ -500,16 +578,21 @@ return lawObject
                   }}>
                   <View style={styles.item}>
                     <Text style={styles.chapterText} key={`${i}a`}>
-                      {SearchResult[detailId]['lawNameDisplay']}
+                      {/* {SearchResult[detailId]['lawNameDisplay']} */}
+                      {highlight(SearchResult[detailId]['lawNameDisplay'],valueInput,`${i}aa`)}
                     </Text>
-                    {!SearchResult[detailId]['lawNameDisplay'].match(
+                    {/* {!SearchResult[detailId]['lawNameDisplay'].match(
                       /^(luật|bộ luật|Hiến)/gim,
                     ) && (
                       <Text style={styles.descriptionText}>
                         {SearchResult[detailId] &&
                           SearchResult[detailId]['lawDescription']}
                       </Text>
-                    )}
+                    )} */}
+                    <Text style={styles.descriptionText}>
+                      
+                    {highlight(SearchResult[detailId]['lawDescription'],valueInput,`${i}ab`)}
+                      </Text>
                   </View>
                 </TouchableOpacity>
               );
@@ -902,12 +985,14 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 16,
+    paddingBottom:5
   },
   descriptionText: {
     textAlign: 'center',
     color: 'black',
     fontSize: 14,
+    // backgroundColor:'blue'
   },
   // chapterArrow: {
   //   backgroundColor: 'black',

@@ -230,8 +230,8 @@ export function Detail1({}) {
       <ScrollView
             ref={ScrollViewToScroll}
         keyboardShouldPersistTaps="handled"
-        style={{backgroundColor: '#EEEFE4',paddingTop: insets.top}}>
-        <View style={{backgroundColor: 'green'}}>
+        style={{backgroundColor: '#EEEFE4'}}>
+        <View style={{backgroundColor: 'green',paddingTop: insets.top}}>
           <Text style={styles.titleText}>{`Tìm kiếm nội dung`}</Text>
 
           <View style={styles.inputContainer}>

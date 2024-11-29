@@ -10,59 +10,66 @@ import {
   Keyboard,
   Animated,
   Dimensions,
-  
 } from 'react-native';
-import {useState, useEffect,useRef} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import dataOrg from '../data/data.json';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Dirs, FileSystem } from 'react-native-file-access';
-import { useScrollToTop } from '@react-navigation/native';
+import {Dirs, FileSystem} from 'react-native-file-access';
+import {useScrollToTop} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function Home({}) {
-
   const navigation = useNavigation();
 
+  // const [Content, setContent] = useState('');
 
-  const [Content, setContent] = useState('');
+  const [Info, setInfo] = useState(false);
 
-  const [Info, setInfo] = useState(false)
-  
   const [inputSearchLaw, setInputSearchLaw] = useState('');
   const [searchLawResult, setSearchLawResult] = useState([]);
 
-
+  const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
 
   const ScrollViewToScroll = useRef(null);
   useScrollToTop(ScrollViewToScroll);
 
-
-
-
-  const Render = ({item,i}) => {
-
+  const Render = ({item, i}) => {
     return (
       <TouchableOpacity
-      key={i}
-      style={{
-        paddingBottom:20,
-        paddingTop:20,
-        justifyContent:'center',
-        backgroundColor: Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/img)?'#003300':'green',
-        marginBottom: 6,
-
-      }}
-      onPress={() => navigation.navigate(`accessLaw`,{screen: item})}>
+        key={i}
+        style={{
+          paddingBottom: 20,
+          paddingTop: 20,
+          justifyContent: 'center',
+          backgroundColor:
+            Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/gim)
+              ? '#003300'
+              : 'green',
+          marginBottom: 6,
+        }}
+        onPress={() => navigation.navigate(`accessLaw`, {screen: item})}>
         <View style={styles.item}>
-        <Text style={{...styles.itemDisplay,color:Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/img)?'yellow':'white'}}>{Info[item] && Info[item]['lawNameDisplay']}</Text>
-        {Info[item] && !Info[item]['lawNameDisplay'].match(/^(luật|bộ luật|hiến)/img) 
-        && <Text style={{...styles.itemDescription}}>{Info[item] && Info[item]['lawDescription']}</Text>}
+          <Text
+            style={{
+              ...styles.itemDisplay,
+              color:
+                Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/gim)
+                  ? 'yellow'
+                  : 'white',
+            }}>
+            {Info[item] && Info[item]['lawNameDisplay']}
+          </Text>
+          {Info[item] &&
+            !Info[item]['lawNameDisplay'].match(/^(luật|bộ luật|hiến)/gim) && (
+              <Text style={{...styles.itemDescription}}>
+                {Info[item] && Info[item]['lawDescription']}
+              </Text>
+            )}
         </View>
       </TouchableOpacity>
     );
   };
-
 
   useEffect(() => {
     setSearchLawResult(
@@ -95,14 +102,21 @@ export default function Home({}) {
               inputSearchLawReg = inputSearchLawReg.replace(/\?/gim, '\\?');
             }
 
-            return (Info[item]['lawNameDisplay'].match(new RegExp(inputSearchLawReg, 'igm')) 
-            || Info[item]['lawDescription'].match(new RegExp(inputSearchLawReg, 'igm'))
-            || Info[item]['lawNumber'].match(new RegExp(inputSearchLawReg, 'igm')));
+            return (
+              Info[item]['lawNameDisplay'].match(
+                new RegExp(inputSearchLawReg, 'igm'),
+              ) ||
+              Info[item]['lawDescription'].match(
+                new RegExp(inputSearchLawReg, 'igm'),
+              ) ||
+              Info[item]['lawNumber'].match(
+                new RegExp(inputSearchLawReg, 'igm'),
+              )
+            );
           }
         }),
     );
   }, [inputSearchLaw]);
-
 
   // const UserSchema = {
   //   name:'task',
@@ -113,118 +127,119 @@ export default function Home({}) {
   //     }
   // };
 
-
-  
   // const realmConfig = {
   //   path: 'myrealm.realm',
   //   schema: [UserSchema],
   // };
-  
+
   // const realm = new Realm(realmConfig);
 
-
-
-
-
-useEffect(() => {
-
-
-  const listener = navigation.addListener('focus', () => {
-    async function getContentExist() {
-      if(await FileSystem.exists(Dirs.CacheDir+'/Content.txt','utf8')){
-        const FileInfoStringContent = await FileSystem.readFile(Dirs.CacheDir+'/Content.txt','utf8');
-        const FileInfoStringInfo = await FileSystem.readFile(Dirs.CacheDir+'/Info.txt','utf8');
-        if(FileInfoStringContent){
-          return {'content':JSON.parse(FileInfoStringContent),'info':JSON.parse(FileInfoStringInfo)}
-        // f = JSON.parse(FileInfoStringInfo)
+  useEffect(() => {
+    const listener = navigation.addListener('focus', () => {
+      async function getContentExist() {
+        if (await FileSystem.exists(Dirs.CacheDir + '/Content.txt', 'utf8')) {
+          const FileInfoStringContent = await FileSystem.readFile(
+            Dirs.CacheDir + '/Content.txt',
+            'utf8',
+          );
+          const FileInfoStringInfo = await FileSystem.readFile(
+            Dirs.CacheDir + '/Info.txt',
+            'utf8',
+          );
+          if (FileInfoStringContent) {
+            return {
+              content: JSON.parse(FileInfoStringContent),
+              info: JSON.parse(FileInfoStringInfo),
+            };
+            // f = JSON.parse(FileInfoStringInfo)
+          }
         }
       }
-    }
-    
-    getContentExist().then((cont)=> {
-      if(cont){
-        
-        // setContent(({...dataOrg['LawContent'],...cont.content}));
-        setInfo({...dataOrg['info'],...cont.info})
 
-      }else{
-        // setContent(dataOrg['LawContent'])
-        setInfo(dataOrg['info'])
-      }
+      getContentExist().then(cont => {
+        if (cont) {
+          // setContent(({...dataOrg['LawContent'],...cont.content}));
+          setInfo({...dataOrg['info'], ...cont.info});
+        } else {
+          // setContent(dataOrg['LawContent'])
+          setInfo(dataOrg['info']);
+        }
+      });
+    });
+  }, []);
 
-  })
-  })
-
-
-
-}, [])
-
-
+  // console.log(insets);
+  
   return (
-    <SafeAreaView>
-
-
+    <>
       <View
         style={{
-          flexDirection: 'row',
-          height: 50,
+          flexDirection: 'column',
+          // height: 50,
           paddingLeft: 10,
           paddingRight: 10,
           display: 'flex',
           alignItems: 'center',
           // backgroundColor:'#EEEFE4',
-          justifyContent:'space-between'
-
+          justifyContent: 'space-between',
+          // backgroundColor: 'red',
+          flexDirection: 'column',
         }}>
         <View
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Ionicons
-            name="logo-buffer"
+            // backgroundColor: 'green',
+            height: insets.top,
+            width: '150%',
+          }}></View>
+        <View style={{flexDirection: 'row'}}>
+          <View
             style={{
-              color: 'green' ,
-              fontSize: 25,
-            }}></Ionicons>
-        </View>
-        <TextInput
-          onChangeText={text => setInputSearchLaw(text)}
-          value={inputSearchLaw}
-          style={inputSearchLaw ? styles.inputSearchArea : styles.placeholder}
-          placeholder="Nhập tên, Số văn bản, Trích yếu . . ."
-          placeholderTextColor={'gray'}
-        ></TextInput>
-        <TouchableOpacity
-          onPress={() => {
-            setInputSearchLaw('');
-            Keyboard.dismiss();
-          }}
-          style={{width: '10%', 
-          display: 'flex',
-          // backgroundColor:'red',
-          }}>
-          {inputSearchLaw && (
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Ionicons
-              name="close-circle-outline"
-              style={{color: 'black', 
-              fontSize: 25,
-              justifyContent:'center',
-              textAlign:'right',
-              // backgroundColor:'black';
-              paddingRight:10
-
-            }}></Ionicons>
-          )}
-        </TouchableOpacity>
+              name="logo-buffer"
+              style={{
+                color: 'green',
+                fontSize: 25,
+              }}></Ionicons>
+          </View>
+          <TextInput
+            onChangeText={text => setInputSearchLaw(text)}
+            value={inputSearchLaw}
+            style={inputSearchLaw ? styles.inputSearchArea : styles.placeholder}
+            placeholder="Nhập tên, Số văn bản, Trích yếu . . ."
+            placeholderTextColor={'gray'}></TextInput>
+          <TouchableOpacity
+            onPress={() => {
+              setInputSearchLaw('');
+              Keyboard.dismiss();
+            }}
+            style={{
+              width: '10%',
+              display: 'flex',
+              // backgroundColor:'red',
+            }}>
+            {inputSearchLaw && (
+              <Ionicons
+                name="close-circle-outline"
+                style={{
+                  color: 'black',
+                  fontSize: 25,
+                  justifyContent: 'center',
+                  textAlign: 'right',
+                  // backgroundColor:'black';
+                  paddingRight: 10,
+                }}></Ionicons>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
-
 
       <FlatList
         ref={ScrollViewToScroll}
-        style={{          backgroundColor:'#EEEFE4',
-        }}
+        style={{backgroundColor: '#EEEFE4'}}
         keyboardShouldPersistTaps="handled"
         data={Info && (searchLawResult || Object.keys(Info))}
         renderItem={Render}
@@ -393,31 +408,29 @@ useEffect(() => {
         ))
       )
       } */}
-          </SafeAreaView>
-
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   item: {
-    minHeight:100,
+    minHeight: 100,
     display: 'flex',
     justifyContent: 'center',
-    paddingLeft:20,
-    paddingRight:20,
-    flexDirection:'column'
+    paddingLeft: 20,
+    paddingRight: 20,
+    flexDirection: 'column',
   },
   itemDisplay: {
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    fontSize:17
+    fontSize: 17,
   },
-  itemDescription:{
-    color:'#EEEEEE',
+  itemDescription: {
+    color: '#EEEEEE',
     textAlign: 'center',
-    fontSize:15
-
+    fontSize: 15,
   },
   inputSearchArea: {
     paddingLeft: 10,
