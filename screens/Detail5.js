@@ -23,7 +23,7 @@ import {ModalStatus} from '../App';
 import {useSelector, useDispatch} from 'react-redux';
 import {InfoDownloaded} from '../App';
 import {loader, noLoading} from '../redux/fetchData';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 let TopUnitCount; // là đơn vị lớn nhất vd là 'phần thứ' hoặc chương
 let articleCount = 0;
@@ -183,54 +183,50 @@ export default function Detail() {
     setWidthDevice(width);
   });
 
-
   function pushToSearch() {
-    
-    if(!go){
-  setPositionYArr([]);
-  setGo(true);
-  if (input) {
-    if (input.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\/)/gim)) {
-      let inputSearchLawReg = input;
+    if (!go) {
+      setPositionYArr([]);
+      setGo(true);
+      if (input) {
+        if (input.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\/)/gim)) {
+          let inputSearchLawReg = input;
 
-      inputSearchLawReg = input.replace(/\(/gim, '\\(');
+          inputSearchLawReg = input.replace(/\(/gim, '\\(');
 
-      inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
+          inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
 
-      inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
+          inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
 
-      inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
+          inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
 
-      // if(input.match(/\//img)){
-      //   inputSearchLawReg = inputSearchLawReg.replace(/\//img,'\\/')
-      // }
+          // if(input.match(/\//img)){
+          //   inputSearchLawReg = inputSearchLawReg.replace(/\//img,'\\/')
+          // }
 
-      inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
+          inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
 
-      setValueInput(inputSearchLawReg);
-    } else {
-      Alert.alert('Thông báo', 'Vui lòng nhập từ khóa hợp lệ');
+          setValueInput(inputSearchLawReg);
+        } else {
+          Alert.alert('Thông báo', 'Vui lòng nhập từ khóa hợp lệ');
+        }
+        // setSearchCount(searchResultCount);
+
+        setCurrentSearchPoint(1);
+        Keyboard.dismiss();
+      } else {
+        Alert.alert('Thông báo', 'Vui lòng nhập từ khóa hợp lệ');
+      }
+    } else if (go && positionYArr.length) {
+      list.current.scrollTo({
+        y: positionYArr[0], //- 57
+      });
+      setCurrentSearchPoint(1);
     }
-    // setSearchCount(searchResultCount);
-
-    setCurrentSearchPoint(1);
-    Keyboard.dismiss();
-  } else {
-    Alert.alert('Thông báo', 'Vui lòng nhập từ khóa hợp lệ');
-  }
-
-}else if(go && positionYArr.length){
-  list.current.scrollTo({
-    y: positionYArr[0] , //- 57
-  });
-  setCurrentSearchPoint(1)
-}
   }
   const ModalVisibleStatus = useContext(ModalStatus);
 
   const {loading} = useSelector(state => state['read']);
   const {info3} = useSelector(state => state['stackscreen']);
-
 
   async function callOneLaw() {
     // dùng để khi qua screen related Law khác khi quay về vẫn còn
@@ -242,7 +238,7 @@ export default function Detail() {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body:JSON.stringify({screen:route.params.screen})
+        body: JSON.stringify({screen: route.params.screen}),
       },
     );
 
@@ -255,7 +251,6 @@ export default function Detail() {
       setContent(res.content);
       setInfo(res.info);
     });
-    
   }, [loading]);
 
   useEffect(() => {
@@ -378,7 +373,6 @@ export default function Detail() {
     // setTittle(null);
   }
 
-
   let searchResultCount = 0;
   // let c = 0;
   function highlight(para, word, i2) {
@@ -395,14 +389,12 @@ export default function Detail() {
             // .split(new RegExp('hội', 'igmu'))
             .reduce((prev, current, i) => {
               if (!i) {
-                return [<Text  key={`${i}xa`}
->{current}</Text>];
+                return [<Text key={`${i}xa`}>{current}</Text>];
               }
 
               function setPositionYSearch({y}) {
+                positionYArr.push(y + currentY - heightDevice / 3);
 
-                positionYArr.push(y + currentY -heightDevice/3);
-                
                 positionYArr.sort((a, b) => {
                   if (a > b) {
                     return 1;
@@ -414,7 +406,7 @@ export default function Detail() {
                 if (go) {
                   setTimeout(() => {
                     list.current.scrollTo({
-                      y: positionYArr[0] , //- 57
+                      y: positionYArr[0], //- 57
                     });
                   }, 500);
                 }
@@ -424,25 +416,9 @@ export default function Detail() {
                 // <View
                 //   // key={`${i0000)}htth`}
                 //   >
-                <React.Fragment
-                key={`${i}htth`}
-                >
-                <View
-                                style={{
-                                  // backgroundColor: 'blue',
-                                  // flex: 1,
-                                  // alignSelf: 'center',
-                                  // padding: 0,
-                                  // margin: 0,
-                                  // overflow: 'visible',
-                                  // right: -50,
-                                  height: go ? 9 : 1,
-                                }}
-            
-                >
+                <React.Fragment key={`${i}htth`}>
                   <View
-                key={`${i}img`}
-                style={{
+                    style={{
                       // backgroundColor: 'blue',
                       // flex: 1,
                       // alignSelf: 'center',
@@ -451,20 +427,31 @@ export default function Detail() {
                       // overflow: 'visible',
                       // right: -50,
                       height: go ? 9 : 1,
-                    }}
-                    onLayout={event => {
-                      event.target.measure(
-                        (x, y, width, height, pageX, pageY) => {
-                          if(go){
-                            setPositionYSearch({
-                              y:y+ pageY,
-                            });
-
-                          }
-                        },
-                      );
-                    }}></View>
-                    </View>
+                    }}>
+                    <View
+                      key={`${i}img`}
+                      style={{
+                        // backgroundColor: 'blue',
+                        // flex: 1,
+                        // alignSelf: 'center',
+                        // padding: 0,
+                        // margin: 0,
+                        // overflow: 'visible',
+                        // right: -50,
+                        height: go ? 9 : 1,
+                      }}
+                      onLayout={event => {
+                        event.target.measure(
+                          (x, y, width, height, pageX, pageY) => {
+                            if (go) {
+                              setPositionYSearch({
+                                y: y + pageY,
+                              });
+                            }
+                          },
+                        );
+                      }}></View>
+                  </View>
                   <Text
                     style={
                       searchResultCount - inputRexgex.length + i - 1 <
@@ -475,13 +462,12 @@ export default function Detail() {
                         : styles.highlight
                       // {width:'auto',backgroundColor:'yellow'}
                     }
-                    key={`${i}gmi`}
-                    >
+                    key={`${i}gmi`}>
                     {inputRexgex[i - 1]}
                   </Text>
-              </React.Fragment> ,
+                </React.Fragment>,
                 <Text
-                key={`${i}vvv`}
+                  key={`${i}vvv`}
                   style={{
                     position: 'relative',
                     display: 'flex',
@@ -492,11 +478,14 @@ export default function Detail() {
                 </Text>,
               );
             }, []);
-          return <View ><Text >{searchedPara}</Text></View>;
+          return (
+            <View>
+              <Text>{searchedPara}</Text>
+            </View>
+          );
           // return <View >{searchedPara}</View>;
           // return <Text >{searchedPara}</Text>;
         } else {
-          
           return para[0];
         }
       } else {
@@ -607,13 +596,10 @@ export default function Detail() {
     }
   }, [loading]);
 
-
-
   useEffect(() => {
-
     if (currentSearchPoint != 0 && searchResultCount) {
       list.current.scrollTo({
-        y: positionYArr[currentSearchPoint - 1] , //- 57
+        y: positionYArr[currentSearchPoint - 1], //- 57
       });
     }
   }, [currentSearchPoint]);
@@ -696,7 +682,7 @@ export default function Detail() {
                 //     ? {width: '100%', marginBottom: 20}
                 //     : {width: '99%', marginBottom: 20}
                 // }
-                >
+              >
                 <Text style={styles.dieu}>
                   {highlight(Object.keys(key2), valueInput, i2)}
                 </Text>
@@ -716,7 +702,7 @@ export default function Detail() {
   const b = (keyA, i, keyB) => {
     // phần nếu có mục 'phần' trong văn bản
     return (
-      <View 
+      <View
       // key={`${i}b`}
       >
         {keyA[keyB].map((keyC, iC) => {
@@ -786,7 +772,7 @@ export default function Detail() {
                     );
                   }}
                   // style={go ? {width: '100%'} : {width: '99%'}}
-                  >
+                >
                   <Text style={styles.dieu}>
                     {highlight(Object.keys(keyC), valueInput, iC)}
                   </Text>
@@ -823,12 +809,12 @@ export default function Detail() {
           //     ? {width: '100%', marginBottom: 20}
           //     : {width: '99%', marginBottom: 20}
           // }
-          >
-          <Text style={styles.dieu} >
-            {highlight([ObjKeys], valueInput, i*2)}
+        >
+          <Text style={styles.dieu}>
+            {highlight([ObjKeys], valueInput, i * 2)}
           </Text>
-          <Text style={styles.lines} >
-            {highlight([key[ObjKeys]], valueInput, i*2+1)}
+          <Text style={styles.lines}>
+            {highlight([key[ObjKeys]], valueInput, i * 2 + 1)}
           </Text>
         </View>
       </View>
@@ -851,8 +837,6 @@ export default function Detail() {
   //   );
   // };
 
-
-  
   return (
     <>
       {loading && (
@@ -1294,7 +1278,6 @@ export default function Detail() {
         </ScrollView>
       </Modal>
 
-
       <Animated.View style={{marginBottom: MagginBottom}}>
         <ScrollView
           onScroll={event => {
@@ -1303,7 +1286,6 @@ export default function Detail() {
               setCurrentY(y);
             }
           }}
-          
           ref={list}
           showsVerticalScrollIndicator={true}>
           <Text key={'abc'} style={styles.titleText}>
@@ -1427,13 +1409,12 @@ export default function Detail() {
                 currentSearchPoint == 1
                   ? setCurrentSearchPoint(positionYArr.length)
                   : setCurrentSearchPoint(currentSearchPoint - 1);
-                  
-                  if ( currentSearchPoint == searchResultCount) {
-                    list.current.scrollTo({
-                      y: positionYArr[currentSearchPoint - 1] ,
-                    });
-                  }
-              
+
+                if (currentSearchPoint == searchResultCount) {
+                  list.current.scrollTo({
+                    y: positionYArr[currentSearchPoint - 1],
+                  });
+                }
               }}>
               <Ionicons
                 name="caret-up-outline"
@@ -1453,11 +1434,11 @@ export default function Detail() {
                 currentSearchPoint == positionYArr.length
                   ? setCurrentSearchPoint(1)
                   : setCurrentSearchPoint(currentSearchPoint + 1);
-                  if ( currentSearchPoint == searchResultCount) {
-                    list.current.scrollTo({
-                      y: positionYArr[currentSearchPoint - 1] ,
-                    });
-                  }
+                if (currentSearchPoint == searchResultCount) {
+                  list.current.scrollTo({
+                    y: positionYArr[currentSearchPoint - 1],
+                  });
+                }
               }}>
               <Ionicons
                 name="caret-down-outline"
@@ -1781,7 +1762,7 @@ export default function Detail() {
                   )}
                 </TouchableOpacity>
               </View>
-              <ScrollView 
+              <ScrollView
               // keyboardShouldPersistTaps="handled"
               >
                 <View style={{height: 7}}>
@@ -1896,7 +1877,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00CD66',
     height: 40,
     paddingTop: 3,
-    paddingBottom:3,
+    paddingBottom: 3,
     zIndex: 10,
     borderTopWidth: 2,
     borderTopColor: 'black',
