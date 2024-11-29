@@ -24,6 +24,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // import {RefOfSearchLaw} from '../App';
@@ -179,8 +180,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Tab = createMaterialTopTabNavigator();
 
 const AppNavigators = () => {
+  const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
+  
+  
   return (
     <Tab.Navigator
+    
       tabBarPosition="bottom"
       screenOptions={({route}) => ({
         tabBarPressColor: '#FFCC66',
@@ -195,9 +200,12 @@ const AppNavigators = () => {
         },
         tabBarStyle: {
           postion: 'absolute',
-          height: 55,
-          borderWidth: 0.5,
+          height: 55 + (insets.bottom)/2 ,
+          borderWidth: 0.5 ,
           borderColor: '#DDDDDD',
+          bottom:-1,
+          // backgroundColor:'red',
+          // width:'100%'
         },
       })}>
       <Tab.Screen
@@ -207,7 +215,7 @@ const AppNavigators = () => {
           header: () => null,
           tabBarIcon: ({focused, color, size}) => {
             return (
-              <View style={{alignItems: 'center', top: -5, minWidth: 100}}>
+              <View style={{alignItems: 'center', top: -5, minWidth: 100,}}>
                 <Ionicons
                   name="home-outline"
                   style={
@@ -218,7 +226,7 @@ const AppNavigators = () => {
                     ...(focused ? styles.IconActive : styles.IconInActive),
                     fontSize: 13,
                     fontWeight: 'bold',
-                    bottom: 2,
+                    
                   }}>
                   Đã tải xuống
                 </Text>
@@ -241,7 +249,7 @@ const AppNavigators = () => {
           header: () => null,
           tabBarIcon: ({focused, color, size}) => {
             return (
-              <View style={{alignItems: 'center', top: -5, minWidth: 100}}>
+              <View style={{alignItems: 'center', top: -5, minWidth: 100,}}>
                 <Ionicons
                   name="albums-outline"
                   style={
@@ -252,7 +260,6 @@ const AppNavigators = () => {
                     ...(focused ? styles.IconActive : styles.IconInActive),
                     fontSize: 13,
                     fontWeight: 'bold',
-                    bottom: 2,
                   }}>
                   Tìm văn bản
                 </Text>
@@ -289,7 +296,6 @@ const AppNavigators = () => {
                     ...(focused ? styles.IconActive : styles.IconInActive),
                     fontSize: 13,
                     fontWeight: 'bold',
-                    bottom: 2,
                   }}>
                   Tìm nội dung
                 </Text>
@@ -333,9 +339,14 @@ const StackNavigator = () => {
       <Stack.Navigator
       
       screenOptions={{
+        // headerShadowVisible:true,
+
         headerStyle:{
-          height:200
-        }
+          backgroundColor:'green',
+
+        },
+        headerBlurEffect:'extraLight',
+        headerShadowVisible:false
       }}
       >
         <Stack.Screen
@@ -356,12 +367,13 @@ const StackNavigator = () => {
             // </View>
             // },
             // headerStyle:{backgroundColor:'red',top:20},
+            // headerLargeTitleShadowVisible:true,
             headerTitleAlign: 'center',
             animation: 'simple_push',
             animationTypeForReplace: 'push',
             headerLeft: () => (
               <TouchableOpacity
-
+              
                 // onPress={() => {
                 //   navigation.goBack();
                 //   console.log(1);
@@ -472,7 +484,8 @@ const styles = StyleSheet.create({
   IconInfo: {
     fontSize: 30,
     display: 'flex',
-    color: 'black',
+    color:'white',
+
   },
   iconInfoContainer: {
     // width: 50,

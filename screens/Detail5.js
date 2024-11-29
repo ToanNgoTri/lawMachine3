@@ -12,6 +12,7 @@ import {
   Modal,
   ActivityIndicator,
   Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 import {Dirs, FileSystem} from 'react-native-file-access';
 import React, {useState, useEffect, useRef, useContext} from 'react';
@@ -23,8 +24,14 @@ import {ModalStatus} from '../App';
 import {useSelector, useDispatch} from 'react-redux';
 import {InfoDownloaded} from '../App';
 import {loader, noLoading} from '../redux/fetchData';
+<<<<<<< HEAD
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+=======
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAnimatedHeaderHeight } from '@react-navigation/native-stack';
+import { useHeaderHeight } from '@react-navigation/elements';
+>>>>>>> 2f7d0ed05d75c797419a215725361eb4b23fe68c
 let TopUnitCount; // là đơn vị lớn nhất vd là 'phần thứ' hoặc chương
 let articleCount = 0;
 let sumChapterArray = []; // array mà mỗi phần tử là 'phần thứ...' có tổng bn chương
@@ -35,7 +42,11 @@ let eachSectionWithChapter = [];
 //lineHeight trong lines phải luôn nhỏ hơn trong highlight và View Hightlight
 
 export default function Detail() {
-  // const inf = useContext(InfoDownloaded);
+
+  // const headerHeight = useAnimatedHeaderHeight();
+  const headerHeight = useHeaderHeight();
+  console.log('headerHeight', (headerHeight));
+  
 
   // const [tittle, setTittle] = useState();     // để collapse chương nếu không có mục 'phần thứ...' hoặc mục' phần thứ...' nếu có
   const [tittleArray, setTittleArray] = useState([true]); // đây là 'phần thứ...' hoặc chương (nói chung là section cao nhất)
@@ -155,6 +166,9 @@ export default function Detail() {
 
   const animatedForNavi = useRef(new Animated.Value(0)).current;
 
+  const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
+  
+
   const list = useRef(null);
   const textInputFind = useRef(null);
   const textInputArticle = useRef(null);
@@ -250,8 +264,13 @@ export default function Detail() {
     callOneLaw().then(res => {
       setContent(res.content);
       setInfo(res.info);
+      // setContent([]);
+      // setInfo([]);
+
     });
   }, [loading]);
+// console.log('Content',Content);
+
 
   useEffect(() => {
     if (!exists) {
@@ -616,7 +635,7 @@ export default function Detail() {
 
   let transY = animatedForNavi.interpolate({
     inputRange: [-100, 0, 80, 90, 100],
-    outputRange: [0, 0, -50, 0, 0],
+    outputRange: [0, 0, -50 - insets.bottom/2, 0, 0],
   });
 
   let transX = animatedForNavi.interpolate({
@@ -631,7 +650,7 @@ export default function Detail() {
 
   let MagginBottom = animatedForNavi.interpolate({
     inputRange: [-100, 0, 80, 90, 100],
-    outputRange: [40, 40, 78, 0, 0],
+    outputRange: [40+ insets.bottom/2 , 40 + insets.bottom/2, 78 + insets.bottom/2, 0, 0],
   });
 
   useEffect(() => {
@@ -838,446 +857,1386 @@ export default function Detail() {
   // };
 
   return (
-    <>
-      {loading && (
+( Platform.OS != 'ios'
+?
+(
+  <>
+  {loading && (
+    <View
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.7,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10,
+        height:heightDevice
+        
+      }}>
+      <Text
+        style={{
+          color: 'white',
+          marginBottom: 15,
+          fontWeight: 'bold',
+        }}>
+        Xin vui lòng đợi trong giây lát ...
+      </Text>
+      <ActivityIndicator size="large" color="white"></ActivityIndicator>
+    </View>
+  )}
+  <Modal
+    presentationStyle="pageSheet"
+    animationType="slide"
+    visible={ModalVisibleStatus.modalStatus}
+    onRequestClose={() => ModalVisibleStatus.updateModalStatus(false)}
+    style={{}}>
+    <ScrollView
+      style={{
+        backgroundColor: '#EEEFE4',
+      }}>
+      <View style={{paddingBottom: 30}}>
         <View
           style={{
-            position: 'absolute',
+            // marginTop:20,
+            backgroundColor: 'white', // #CCCCCC
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: 60,
+            // borderBottomWidth:3,
+            borderColor: '#2F4F4F',
+            // shadowColor: 'gray',
+            // shadowOpacity: 1,
+            // shadowOffset: {
+            //   width: 2,
+            //   height: 2,
+            // },
+            // shadowRadius: 4,
+            // elevation: 1,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              ModalVisibleStatus.updateModalStatus(false);
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 60,
+              width: 60,
+              // borderWidth:4,
+              borderColor: 'black',
+              // borderRadius:10,
+              // backgroundColor:'white',
+            }}>
+            <Ionicons
+              name="close-outline"
+              style={{
+                color: 'black',
+                fontSize: 30,
+                textAlign: 'center',
+                // width: '100%',
+                fontWeight: 'bold',
+              }}></Ionicons>
+          </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: 'white',
+              alignItems: 'center',
+              flex: 1,
+              justifyContent: 'flex-end',
+            }}>
+            {exists && !dataOrg['info'][route.params.screen] && (
+              <TouchableOpacity
+                onPress={() => {
+                  StoreInternal();
+                  setExists(false);
+                }}
+                style={{
+                  // backgroundColor: '#00CC33',
+                  // padding: 20,
+                  alignItems: 'center',
+                  width: 70,
+                  height: 60,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Ionicons
+                  name="save-outline"
+                  style={{
+                    color: '#009933',
+                    fontSize: 25,
+                    textAlign: 'center',
+                    width: '100%',
+                    fontWeight: 'bold',
+                  }}></Ionicons>
+              </TouchableOpacity>
+            )}
+            {!exists && !dataOrg['info'][route.params.screen] && (
+              <TouchableOpacity
+                onPress={async () => {
+                  Alert.alert(
+                    'thông báo',
+                    'Bạn có muốn xóa văn bản ra khỏi bộ nhớ không?',
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          DeleteInternal();
+                          setExists(true);
+                        },
+                      },
+                    ],
+                  );
+                }}
+                style={{
+                  // backgroundColor: '#00CC33',
+                  // padding: 20,
+                  alignItems: 'center',
+                  width: 70,
+                  height: 60,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {/* <Text
+                style={{
+                  // backgroundColor: 'red',
+                  paddingLeft: 10,
+                  paddingRight: 5,
+                  fontSize: 15,
+                  color: 'white',
+                }}>
+                Xóa
+              </Text> */}
+                <Ionicons
+                  name="trash-outline"
+                  style={{
+                    color: 'red',
+                    fontSize: 25,
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                  }}></Ionicons>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+        <View
+          style={{
+            padding: 20,
+            paddingTop: 30,
+            paddingBottom: 20,
+            // backgroundColor: 'blue',
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 23,
+              fontWeight: 'bold',
+              color: 'black',
+            }}>
+            THÔNG TIN CHI TIẾT
+          </Text>
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            paddingTop: 10,
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            // backgroundColor: 'green',
+            paddingLeft: '5%',
+            paddingRight: '5%',
+          }}>
+          <View style={{...styles.ModalInfoContainer, borderTopWidth: 2}}>
+            <View style={{width: '40%', justifyContent: 'center'}}>
+              <Text style={styles.ModalInfoTitle}>Tên gọi:</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={styles.ModalInfoContent}>
+                {Info && Info['lawNameDisplay']}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.ModalInfoContainer}>
+            <View style={{width: '40%', justifyContent: 'center'}}>
+              <Text style={styles.ModalInfoTitle}>Trích yếu nội dung:</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={styles.ModalInfoContent}>
+                {Info && Info['lawDescription']}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.ModalInfoContainer}>
+            <View style={{width: '40%'}}>
+              <Text style={styles.ModalInfoTitle}>Ngày ký:</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={styles.ModalInfoContent}>
+                {Info &&
+                  new Date(Info['lawDaySign']).toLocaleDateString('vi-VN')}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.ModalInfoContainer}>
+            <View style={{width: '40%'}}>
+              <Text style={styles.ModalInfoTitle}>Ngày có hiệu lực:</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={styles.ModalInfoContent}>
+                {Info &&
+                  new Date(Info['lawDayActive']).toLocaleDateString(
+                    'vi-VN',
+                  )}
+              </Text>
+            </View>
+          </View>
+          {Info['lawNumber'] && (
+            <View style={styles.ModalInfoContainer}>
+              <View style={{width: '40%'}}>
+                <Text style={styles.ModalInfoTitle}>Số văn bản:</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={styles.ModalInfoContent}>
+                  {Info && !Info['lawNumber'].match(/^0001\\HP/gim)
+                    ? Info['lawNumber']
+                    : ''}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          <View style={styles.ModalInfoContainer}>
+            <View style={{width: '40%'}}>
+              <Text style={styles.ModalInfoTitle}>Tên người ký:</Text>
+            </View>
+            <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+              {Info && !Array.isArray(Info['nameSign']) ? (
+                <Text style={styles.ModalInfoContent}>
+                  {Info['nameSign']}
+                </Text>
+              ) : (
+                Info['nameSign'] &&
+                Info['nameSign'].map((key, i) => (
+                  <View key={`${i}nameSign`}>
+                    <Text style={{...styles.ModalInfoContentLawRelated}}>
+                      {`- ${key}`}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </View>
+          </View>
+
+          <View style={styles.ModalInfoContainer}>
+            <View style={{width: '40%'}}>
+              <Text style={styles.ModalInfoTitle}>Chức vụ người ký:</Text>
+            </View>
+            <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+              {Info && !Array.isArray(Info['roleSign']) ? (
+                <Text style={styles.ModalInfoContent}>
+                  {Info['roleSign']}
+                </Text>
+              ) : (
+                Info['roleSign'] &&
+                Info['roleSign'].map((key, i) => (
+                  <View key={`${i}roleSign`}>
+                    <Text style={{...styles.ModalInfoContentLawRelated}}>
+                      {`- ${key}`}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </View>
+          </View>
+          <View style={{...styles.ModalInfoContainer}}>
+            <View style={{width: '40%'}}>
+              <Text style={{...styles.ModalInfoTitle}}>
+                Cơ quan ban hành:
+              </Text>
+            </View>
+            <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+              {Info && !Array.isArray(Info['unitPublish']) ? (
+                <Text style={styles.ModalInfoContent}>
+                  {Info['unitPublish']}
+                </Text>
+              ) : (
+                Info['unitPublish'] &&
+                Info['unitPublish'].map((key, i) => (
+                  <View key={`${i}unitPublish`}>
+                    <Text style={{...styles.ModalInfoContentLawRelated}}>
+                      {`- ${key}`}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </View>
+          </View>
+          {Info && Object.keys(Info).includes('lawRelated') && (
+            <View
+              style={{...styles.ModalInfoContainer, borderBottomWidth: 2}}>
+              <View style={{width: '40%'}}>
+                <Text style={styles.ModalInfoTitle}>
+                  Văn bản liên quan:
+                </Text>
+              </View>
+              <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+                {Info &&
+                  Info['lawRelated'].map((key, i) => {
+                    let nameLaw = key;
+
+                    let LawHaveWord;
+                    let LawHaveNoWord;
+                    let correctIndex;
+                    for (let a = 0; a < info3.length; a++) {
+                      if (
+                        info3[a]['info']['lawNameDisplay'].match(
+                          new RegExp(`^${key}`, 'gim'),
+                        )
+                      ) {
+                        correctIndex = a;
+                        LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                        break;
+                      } else if (
+                        info3[a]['info']['lawDescription'].match(
+                          new RegExp(`^${key}`, 'gim'),
+                        )
+                      ) {
+                        correctIndex = a;
+                        LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                      } else if (
+                        info3[a]['info']['lawNumber'].match(
+                          new RegExp(`^${key}`, 'gim'),
+                        )
+                      ) {
+                        correctIndex = a;
+                        LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
+                      }
+                    }
+
+                    return (
+                      <TouchableOpacity
+                        key={`${i}lawRelated`}
+                        onPress={() => {
+                          if (LawHaveWord || LawHaveNoWord) {
+                            navigation.push(`accessLaw`, {
+                              screen: info3[correctIndex]._id,
+                            });
+                            ModalVisibleStatus.updateModalStatus(false);
+                          }
+                        }}>
+                        <Text
+                          style={{
+                            ...styles.ModalInfoContentLawRelated,
+                            fontWeight:
+                              LawHaveNoWord || LawHaveWord ? 'bold' : '300',
+                          }}>
+                          -{' '}
+                          {
+                            LawHaveNoWord
+                              ? LawHaveNoWord
+                              : LawHaveWord
+                              ? LawHaveWord
+                              : nameLaw
+
+                            // info3[nameLaw] ? info3[nameLaw] : nameLaw
+                          }
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+              </View>
+            </View>
+          )}
+          <TouchableOpacity
+            onPress={async () => {
+              ModalVisibleStatus.updateModalStatus(false);
+            }}
+            style={{
+              padding: 5,
+              marginTop: 30,
+              backgroundColor: 'white', //#778899
+              // backgroundColor: '#00CC33',
+              alignItems: 'center',
+              width: 100,
+              height: 35,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 10,
+              // borderColor:'#555555',
+              // borderWidth:1,
+
+              shadowColor: 'gray',
+              shadowOpacity: 1,
+              shadowOffset: {
+                width: 1,
+                height: 1,
+              },
+              shadowRadius: 4,
+              elevation: 2,
+            }}>
+            <Text
+              style={{
+                // backgroundColor: 'red',
+                // paddingLeft: 10,
+                // paddingRight: 5,
+                fontSize: 15,
+                color: 'black',
+                fontWeight: 'bold',
+              }}>
+              Đóng
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+  </Modal>
+
+  { Boolean(Content.length) &&
+   
+   <>
+
+  <Animated.View style={{marginBottom: MagginBottom,
+}}>
+    <ScrollView
+      onScroll={event => {
+        {
+          const {y} = event.nativeEvent.contentOffset;
+          setCurrentY(y);
+        }
+      }}
+      
+      ref={list}
+      showsVerticalScrollIndicator={true}
+      
+      >
+      <Text key={'abc'} style={styles.titleText}>
+        {Info && Info['lawNameDisplay']}
+      </Text>
+      {Content &&
+        Content.map((key, i) => {
+          if (i + 1 == Content.length) {
+            // dispatch(noLoading())
+          }
+          return (
+            <View key={`${i}Main`}>
+              {!Object.keys(key)[0].match(/^(Điều|Điều)/gim) && (
+                <TouchableOpacity
+                  // key={`${i}qq`}
+                  style={styles.chapter}
+                  onPress={() => {
+                    collapse(i);
+                    // setTittle(i);
+                  }}>
+                  <Text
+                    // key={`${i}bb`}
+                    style={{
+                      fontSize: 18,
+                      color: 'black',
+                      fontWeight: 'bold',
+                      padding: 9,
+                      textAlign: 'center',
+                    }}>
+                    {Object.keys(key)[0].toUpperCase()}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {Object.keys(key)[0].match(/^phần thứ .*/gim)
+                ? b(key, i, Object.keys(key)[0])
+                : Object.keys(key)[0].match(/^chương .*/gim)
+                ? a(key, i, Object.keys(key)[0])
+                : Object.keys(key)[0].match(/^điều .*/gim)
+                ? c(key, i, Object.keys(key)[0])
+                : ''}
+            </View>
+          );
+        })}
+    </ScrollView>
+  </Animated.View>
+  <Animated.View
+    style={{
+      ...styles.findArea,
+      width: widthDevice,
+      transform: [{translateY: transY}],
+      
+    }}>
+    <View
+      // distance={10}
+      // startColor={'gray'}
+      // sides={'top'}
+      style={{...styles.searchView, width: widthDevice}}>
+      {/* <View style={styles.searchView}> */}
+
+      <View
+        style={{
+          flexDirection: 'row',
+          minWidth: 98,
+          width: '20%',
+          justifyContent: 'space-around',
+          height: '100%',
+          alignItems: 'center',
+          alignContent: 'center',
+        }}>
+        <TouchableOpacity
+          style={styles.tabSearch}
+          onPress={() => {
+            currentSearchPoint == 1
+              ? setCurrentSearchPoint(positionYArr.length)
+              : setCurrentSearchPoint(currentSearchPoint - 1);
+              
+              if ( currentSearchPoint == searchResultCount) {
+                list.current.scrollTo({
+                  y: positionYArr[currentSearchPoint - 1] ,
+                });
+              }
+          
+          }}>
+          <Ionicons
+            name="caret-up-outline"
+            style={{
+              paddingLeft: 15,
+              paddingRight: 15,
+              fontSize: 18,
+              color: '#888888',
+              // textAlign: 'center',
+              // fontWeight: 'bold',
+              // fontSize: 25,
+            }}></Ionicons>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.tabSearch}
+          onPress={() => {
+            currentSearchPoint == positionYArr.length
+              ? setCurrentSearchPoint(1)
+              : setCurrentSearchPoint(currentSearchPoint + 1);
+              if ( currentSearchPoint == searchResultCount) {
+                list.current.scrollTo({
+                  y: positionYArr[currentSearchPoint - 1] ,
+                });
+              }
+          }}>
+          <Ionicons
+            name="caret-down-outline"
+            style={{
+              paddingLeft: 15,
+              paddingRight: 15,
+              fontSize: 18,
+              color: '#888888',
+              // textAlign: 'center',
+              // fontWeight: 'bold',
+              // fontSize: 25,
+            }}></Ionicons>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputArea}>
+        <View style={{flexDirection: 'row', width: '89%'}}>
+          <TextInput
+            ref={textInputFind}
+            selectTextOnFocus={true}
+            style={{
+              width: '90%',
+              color: 'black',
+              height: 35,
+              fontSize: 13,
+              padding: 0,
+              paddingLeft: 10,
+            }}
+            onChangeText={text => setInput(text)}
+            autoFocus={false}
+            value={input}
+            placeholder=" Vui lòng nhập từ khóa ..."
+            placeholderTextColor={'gray'}
+            onSubmitEditing={() => pushToSearch()}></TextInput>
+          <TouchableOpacity
+            style={{
+              color: 'white',
+              fontSize: 16,
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+              right: 0,
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              setInput('');
+              textInputFind.current.focus();
+            }}>
+            {input && (
+              <Ionicons
+                name="close-circle-outline"
+                style={{
+                  color: 'black',
+                  fontSize: 20,
+                  textAlign: 'center',
+                  width: '100%',
+                  height: 20,
+                }}></Ionicons>
+            )}
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignContent: 'center',
+            padding: 0,
+            left: 0,
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 8,
+              textAlign: 'center',
+              // minWidth:18
+            }}>
+            {searchResultCount
+              ? `${currentSearchPoint}`
+              : searchResultCount}
+          </Text>
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 8,
+              textAlign: 'center',
+              borderTopColor: 'gray',
+              borderTopWidth: 1,
+              // minWidth:18,
+            }}>
+            {searchResultCount ? `${searchResultCount}` : searchResultCount}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
+        <TouchableOpacity
+          style={styles.searchBtb}
+          onPress={() => {
+            pushToSearch();
+          }}>
+          <Ionicons
+            name="return-down-forward-outline"
+            style={{
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 18,
+            }}></Ionicons>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </Animated.View>
+
+  <View style={{...styles.functionTab,paddingBottom:3 + insets.bottom/2,height: 40+ insets.bottom/2,}}>
+    {!onlyArticle && (
+      <TouchableOpacity
+        style={styles.tab}
+        onPress={() => {
+          setFind(false);
+
+          let timeOut = setTimeout(() => {
+            setShowArticle(false);
+            return () => {};
+          }, 600);
+
+          setTittleArray([]);
+          Shrink();
+
+          Animated.timing(animatedForNavi, {
+            toValue: 0,
+            // toValue:100,
+            duration: 600,
+            useNativeDriver: false,
+          }).start();
+        }}>
+        {/* <Text style={styles.innerTab}>S</Text> */}
+        <Ionicons
+          name="chevron-collapse-outline"
+          style={styles.innerTab}></Ionicons>
+      </TouchableOpacity>
+    )}
+    {!onlyArticle && (
+      <TouchableOpacity
+        style={styles.tab}
+        onPress={() => {
+          setTittleArray([]);
+          setTittleArray2([]);
+          setFind(false);
+          let timeOut = setTimeout(() => {
+            setShowArticle(false);
+            return () => {};
+          }, 600);
+
+          Animated.timing(animatedForNavi, {
+            toValue: 0,
+            duration: 600,
+            useNativeDriver: false,
+          }).start();
+        }}>
+        {/* <Text style={styles.innerTab}>E</Text> */}
+        <Ionicons
+          name="chevron-expand-outline"
+          style={styles.innerTab}></Ionicons>
+      </TouchableOpacity>
+    )}
+    <TouchableOpacity
+      style={styles.tab}
+      onPress={() => {
+        list.current.scrollTo({y: 0});
+        let timeOut = setTimeout(() => {
+          setShowArticle(false);
+          return () => {};
+        }, 600);
+      }}>
+      <Ionicons name="arrow-up-outline" style={styles.innerTab}></Ionicons>
+    </TouchableOpacity>
+
+    <TouchableOpacity
+      // style={find ? styles.ActiveTab : styles.tab}
+      style={styles.tab}
+      onPress={() => {
+        setFind(!find);
+        let timeOut = setTimeout(() => {
+          setShowArticle(false);
+          return () => {};
+        }, 600);
+        Animated.timing(animatedForNavi, {
+          toValue: !find ? 80 : 0,
+          duration: 600,
+          useNativeDriver: false,
+        }).start();
+
+        setTittleArray([]);
+        setTittleArray2([]);
+        // Shrink();
+        setGo(false);
+      }}>
+      {/* <Text style={styles.innerTab}>Find</Text> */}
+      <Ionicons
+        name="search-outline"
+        style={find ? styles.ActiveInner : styles.innerTab}></Ionicons>
+    </TouchableOpacity>
+    <TouchableOpacity
+      // style={showArticle && !find ? styles.ActiveTab : styles.tab}
+      style={styles.tab}
+      onPress={() => {
+        if (showArticle) {
+          let timeOut = setTimeout(() => {
+            setShowArticle(false);
+            return () => {};
+          }, 600);
+        } else {
+          setShowArticle(true);
+        }
+        setFind(false);
+        Keyboard.dismiss();
+        Animated.timing(animatedForNavi, {
+          toValue: !showArticle ? -100 : 0,
+          duration: 600,
+          useNativeDriver: false,
+        }).start();
+
+        setTittleArray([]);
+        setTittleArray2([]);
+        // Shrink();
+      }}>
+      <Ionicons
+        name="menu-outline"
+        style={
+          showArticle ? styles.ActiveInner : styles.innerTab
+        }></Ionicons>
+    </TouchableOpacity>
+  </View>
+  </>
+}
+  {/* </KeyboardAvoidingView> */}
+  <>
+    {showArticle && (
+      <>
+        <Animated.View
+          style={{
+            backgroundColor: 'rgb(245,245,247)',
             left: 0,
             right: 0,
             top: 0,
             bottom: 0,
-            opacity: 0.7,
-            backgroundColor: 'black',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 10,
+            display: 'flex',
+            position: 'absolute',
+            opacity: Opacity,
           }}>
-          <Text
+          <TouchableOpacity //overlay
             style={{
-              color: 'white',
-              marginBottom: 15,
-              fontWeight: 'bold',
-            }}>
-            Xin vui lòng đợi trong giây lát ...
-          </Text>
-          <ActivityIndicator size="large" color="white"></ActivityIndicator>
-        </View>
-      )}
-      <Modal
-        presentationStyle="pageSheet"
-        animationType="slide"
-        visible={ModalVisibleStatus.modalStatus}
-        onRequestClose={() => ModalVisibleStatus.updateModalStatus(false)}
-        style={{}}>
-        <ScrollView
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              display: 'flex',
+              position: 'absolute',
+            }}
+            onPress={() => {
+              // Keyboard.dismiss()
+              let timeOut = setTimeout(() => {
+                setShowArticle(false);
+                return () => {};
+              }, 600);
+              Animated.timing(animatedForNavi, {
+                toValue: !showArticle ? -100 : 0,
+                duration: 600,
+                useNativeDriver: false,
+              }).start();
+            }}></TouchableOpacity>
+        </Animated.View>
+
+        <Animated.View
           style={{
-            backgroundColor: '#EEEFE4',
+            ...styles.listArticle,
+            width: (widthDevice / 100) * 60,
+            transform: [{translateX: transX}],
+            marginBottom: 40 + insets.bottom/2,
           }}>
-          <View style={{paddingBottom: 30}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: 'black',
+              height: 50,
+            }}>
+            <TextInput
+              ref={textInputArticle}
+              onChangeText={text => setInputSearchArtical(text)}
+              selectTextOnFocus={true}
+              value={inputSearchArtical}
+              style={{
+                paddingLeft: 10,
+                paddingRight: 10,
+                color: 'white',
+                width: '85%',
+                alignItems: 'center',
+              }}
+              placeholder=" Nhập từ điều luật ..."
+              placeholderTextColor={'gray'}></TextInput>
+            <TouchableOpacity
+              onPress={() => {
+                setInputSearchArtical('');
+                textInputArticle.current.focus();
+              }}
+              style={{
+                width: '15%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              {inputSearchArtical && (
+                <Text
+                  style={{
+                    height: 20,
+                    width: 20,
+                    color: 'white',
+                    textAlign: 'center',
+                    verticalAlign: 'middle',
+                    backgroundColor: 'gray',
+                    borderRadius: 25,
+                  }}>
+                  X
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+          <ScrollView 
+          // keyboardShouldPersistTaps="handled"
+          >
+            <View style={{height: 7}}>
+              {
+                // đây là hàng ảo để thêm margin
+              }
+            </View>
+            {(SearchArticalResult || positionYArrArtical).map((key, i) => {
+              return (
+                <TouchableOpacity
+                  key={`${i}SearchArtical`}
+                  style={styles.listItem}
+                  onPress={() => {
+                    setShowArticle(false);
+                    list.current.scrollTo({y: Object.values(key) - 70});
+                    Animated.timing(animatedForNavi, {
+                      toValue: !showArticle ? -100 : 0,
+                      duration: 600,
+                      useNativeDriver: false,
+                    }).start();
+                  }}>
+                  <Text style={styles.listItemText}>
+                    {Object.keys(key)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </Animated.View>
+      </>
+    )}
+  </>
+</>
+
+) : (
+
+  <KeyboardAvoidingView
+  behavior='position'
+  keyboardVerticalOffset={60 + insets.bottom/2}
+  // style={{height:1000}}
+  >
+    {loading && (
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          opacity: 0.7,
+          backgroundColor: 'black',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10,
+          height:heightDevice
+          
+        }}>
+        <Text
+          style={{
+            color: 'white',
+            marginBottom: 15,
+            fontWeight: 'bold',
+          }}>
+          Xin vui lòng đợi trong giây lát ...
+        </Text>
+        <ActivityIndicator size="large" color="white"></ActivityIndicator>
+      </View>
+    )}
+    <Modal
+      presentationStyle="pageSheet"
+      animationType="slide"
+      visible={ModalVisibleStatus.modalStatus}
+      onRequestClose={() => ModalVisibleStatus.updateModalStatus(false)}
+      style={{}}>
+      <ScrollView
+        style={{
+          backgroundColor: '#EEEFE4',
+        }}>
+        <View style={{paddingBottom: 30}}>
+          <View
+            style={{
+              // marginTop:20,
+              backgroundColor: 'white', // #CCCCCC
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              height: 60,
+              // borderBottomWidth:3,
+              borderColor: '#2F4F4F',
+              // shadowColor: 'gray',
+              // shadowOpacity: 1,
+              // shadowOffset: {
+              //   width: 2,
+              //   height: 2,
+              // },
+              // shadowRadius: 4,
+              // elevation: 1,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                ModalVisibleStatus.updateModalStatus(false);
+              }}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: 60,
+                width: 60,
+                // borderWidth:4,
+                borderColor: 'black',
+                // borderRadius:10,
+                // backgroundColor:'white',
+              }}>
+              <Ionicons
+                name="close-outline"
+                style={{
+                  color: 'black',
+                  fontSize: 30,
+                  textAlign: 'center',
+                  // width: '100%',
+                  fontWeight: 'bold',
+                }}></Ionicons>
+            </TouchableOpacity>
             <View
               style={{
-                // marginTop:20,
-                backgroundColor: 'white', // #CCCCCC
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                backgroundColor: 'white',
                 alignItems: 'center',
-                height: 60,
-                // borderBottomWidth:3,
-                borderColor: '#2F4F4F',
-                // shadowColor: 'gray',
-                // shadowOpacity: 1,
-                // shadowOffset: {
-                //   width: 2,
-                //   height: 2,
-                // },
-                // shadowRadius: 4,
-                // elevation: 1,
+                flex: 1,
+                justifyContent: 'flex-end',
               }}>
-              <TouchableOpacity
-                onPress={() => {
-                  ModalVisibleStatus.updateModalStatus(false);
-                }}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 60,
-                  width: 60,
-                  // borderWidth:4,
-                  borderColor: 'black',
-                  // borderRadius:10,
-                  // backgroundColor:'white',
-                }}>
-                <Ionicons
-                  name="close-outline"
+              {exists && !dataOrg['info'][route.params.screen] && (
+                <TouchableOpacity
+                  onPress={() => {
+                    StoreInternal();
+                    setExists(false);
+                  }}
                   style={{
-                    color: 'black',
-                    fontSize: 30,
-                    textAlign: 'center',
-                    // width: '100%',
-                    fontWeight: 'bold',
-                  }}></Ionicons>
-              </TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  flex: 1,
-                  justifyContent: 'flex-end',
-                }}>
-                {exists && !dataOrg['info'][route.params.screen] && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      StoreInternal();
-                      setExists(false);
-                    }}
+                    // backgroundColor: '#00CC33',
+                    // padding: 20,
+                    alignItems: 'center',
+                    width: 70,
+                    height: 60,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Ionicons
+                    name="save-outline"
                     style={{
-                      // backgroundColor: '#00CC33',
-                      // padding: 20,
-                      alignItems: 'center',
-                      width: 70,
-                      height: 60,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Ionicons
-                      name="save-outline"
-                      style={{
-                        color: '#009933',
-                        fontSize: 25,
-                        textAlign: 'center',
-                        width: '100%',
-                        fontWeight: 'bold',
-                      }}></Ionicons>
-                  </TouchableOpacity>
-                )}
-                {!exists && !dataOrg['info'][route.params.screen] && (
-                  <TouchableOpacity
-                    onPress={async () => {
-                      Alert.alert(
-                        'thông báo',
-                        'Bạn có muốn xóa văn bản ra khỏi bộ nhớ không?',
-                        [
-                          {
-                            text: 'Cancel',
-                            style: 'cancel',
+                      color: '#009933',
+                      fontSize: 25,
+                      textAlign: 'center',
+                      width: '100%',
+                      fontWeight: 'bold',
+                    }}></Ionicons>
+                </TouchableOpacity>
+              )}
+              {!exists && !dataOrg['info'][route.params.screen] && (
+                <TouchableOpacity
+                  onPress={async () => {
+                    Alert.alert(
+                      'thông báo',
+                      'Bạn có muốn xóa văn bản ra khỏi bộ nhớ không?',
+                      [
+                        {
+                          text: 'Cancel',
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'OK',
+                          onPress: () => {
+                            DeleteInternal();
+                            setExists(true);
                           },
-                          {
-                            text: 'OK',
-                            onPress: () => {
-                              DeleteInternal();
-                              setExists(true);
-                            },
-                          },
-                        ],
-                      );
-                    }}
+                        },
+                      ],
+                    );
+                  }}
+                  style={{
+                    // backgroundColor: '#00CC33',
+                    // padding: 20,
+                    alignItems: 'center',
+                    width: 70,
+                    height: 60,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  {/* <Text
+                  style={{
+                    // backgroundColor: 'red',
+                    paddingLeft: 10,
+                    paddingRight: 5,
+                    fontSize: 15,
+                    color: 'white',
+                  }}>
+                  Xóa
+                </Text> */}
+                  <Ionicons
+                    name="trash-outline"
                     style={{
-                      // backgroundColor: '#00CC33',
-                      // padding: 20,
-                      alignItems: 'center',
-                      width: 70,
-                      height: 60,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    {/* <Text
-                    style={{
-                      // backgroundColor: 'red',
-                      paddingLeft: 10,
-                      paddingRight: 5,
-                      fontSize: 15,
-                      color: 'white',
-                    }}>
-                    Xóa
-                  </Text> */}
-                    <Ionicons
-                      name="trash-outline"
-                      style={{
-                        color: 'red',
-                        fontSize: 25,
-                        textAlign: 'center',
-                        fontWeight: 'bold',
-                      }}></Ionicons>
-                  </TouchableOpacity>
+                      color: 'red',
+                      fontSize: 25,
+                      textAlign: 'center',
+                      fontWeight: 'bold',
+                    }}></Ionicons>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+          <View
+            style={{
+              padding: 20,
+              paddingTop: 30,
+              paddingBottom: 20,
+              // backgroundColor: 'blue',
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 23,
+                fontWeight: 'bold',
+                color: 'black',
+              }}>
+              THÔNG TIN CHI TIẾT
+            </Text>
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              paddingTop: 10,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              // backgroundColor: 'green',
+              paddingLeft: '5%',
+              paddingRight: '5%',
+            }}>
+            <View style={{...styles.ModalInfoContainer, borderTopWidth: 2}}>
+              <View style={{width: '40%', justifyContent: 'center'}}>
+                <Text style={styles.ModalInfoTitle}>Tên gọi:</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={styles.ModalInfoContent}>
+                  {Info && Info['lawNameDisplay']}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.ModalInfoContainer}>
+              <View style={{width: '40%', justifyContent: 'center'}}>
+                <Text style={styles.ModalInfoTitle}>Trích yếu nội dung:</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={styles.ModalInfoContent}>
+                  {Info && Info['lawDescription']}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.ModalInfoContainer}>
+              <View style={{width: '40%'}}>
+                <Text style={styles.ModalInfoTitle}>Ngày ký:</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={styles.ModalInfoContent}>
+                  {Info &&
+                    new Date(Info['lawDaySign']).toLocaleDateString('vi-VN')}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.ModalInfoContainer}>
+              <View style={{width: '40%'}}>
+                <Text style={styles.ModalInfoTitle}>Ngày có hiệu lực:</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={styles.ModalInfoContent}>
+                  {Info &&
+                    new Date(Info['lawDayActive']).toLocaleDateString(
+                      'vi-VN',
+                    )}
+                </Text>
+              </View>
+            </View>
+            {Info['lawNumber'] && (
+              <View style={styles.ModalInfoContainer}>
+                <View style={{width: '40%'}}>
+                  <Text style={styles.ModalInfoTitle}>Số văn bản:</Text>
+                </View>
+                <View style={{flex: 1}}>
+                  <Text style={styles.ModalInfoContent}>
+                    {Info && !Info['lawNumber'].match(/^0001\\HP/gim)
+                      ? Info['lawNumber']
+                      : ''}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            <View style={styles.ModalInfoContainer}>
+              <View style={{width: '40%'}}>
+                <Text style={styles.ModalInfoTitle}>Tên người ký:</Text>
+              </View>
+              <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+                {Info && !Array.isArray(Info['nameSign']) ? (
+                  <Text style={styles.ModalInfoContent}>
+                    {Info['nameSign']}
+                  </Text>
+                ) : (
+                  Info['nameSign'] &&
+                  Info['nameSign'].map((key, i) => (
+                    <View key={`${i}nameSign`}>
+                      <Text style={{...styles.ModalInfoContentLawRelated}}>
+                        {`- ${key}`}
+                      </Text>
+                    </View>
+                  ))
                 )}
               </View>
             </View>
-            <View
+
+            <View style={styles.ModalInfoContainer}>
+              <View style={{width: '40%'}}>
+                <Text style={styles.ModalInfoTitle}>Chức vụ người ký:</Text>
+              </View>
+              <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+                {Info && !Array.isArray(Info['roleSign']) ? (
+                  <Text style={styles.ModalInfoContent}>
+                    {Info['roleSign']}
+                  </Text>
+                ) : (
+                  Info['roleSign'] &&
+                  Info['roleSign'].map((key, i) => (
+                    <View key={`${i}roleSign`}>
+                      <Text style={{...styles.ModalInfoContentLawRelated}}>
+                        {`- ${key}`}
+                      </Text>
+                    </View>
+                  ))
+                )}
+              </View>
+            </View>
+            <View style={{...styles.ModalInfoContainer}}>
+              <View style={{width: '40%'}}>
+                <Text style={{...styles.ModalInfoTitle}}>
+                  Cơ quan ban hành:
+                </Text>
+              </View>
+              <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+                {Info && !Array.isArray(Info['unitPublish']) ? (
+                  <Text style={styles.ModalInfoContent}>
+                    {Info['unitPublish']}
+                  </Text>
+                ) : (
+                  Info['unitPublish'] &&
+                  Info['unitPublish'].map((key, i) => (
+                    <View key={`${i}unitPublish`}>
+                      <Text style={{...styles.ModalInfoContentLawRelated}}>
+                        {`- ${key}`}
+                      </Text>
+                    </View>
+                  ))
+                )}
+              </View>
+            </View>
+            {Info && Object.keys(Info).includes('lawRelated') && (
+              <View
+                style={{...styles.ModalInfoContainer, borderBottomWidth: 2}}>
+                <View style={{width: '40%'}}>
+                  <Text style={styles.ModalInfoTitle}>
+                    Văn bản liên quan:
+                  </Text>
+                </View>
+                <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
+                  {Info &&
+                    Info['lawRelated'].map((key, i) => {
+                      let nameLaw = key;
+
+                      let LawHaveWord;
+                      let LawHaveNoWord;
+                      let correctIndex;
+                      for (let a = 0; a < info3.length; a++) {
+                        if (
+                          info3[a]['info']['lawNameDisplay'].match(
+                            new RegExp(`^${key}`, 'gim'),
+                          )
+                        ) {
+                          correctIndex = a;
+                          LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                          break;
+                        } else if (
+                          info3[a]['info']['lawDescription'].match(
+                            new RegExp(`^${key}`, 'gim'),
+                          )
+                        ) {
+                          correctIndex = a;
+                          LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                        } else if (
+                          info3[a]['info']['lawNumber'].match(
+                            new RegExp(`^${key}`, 'gim'),
+                          )
+                        ) {
+                          correctIndex = a;
+                          LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
+                        }
+                      }
+
+                      return (
+                        <TouchableOpacity
+                          key={`${i}lawRelated`}
+                          onPress={() => {
+                            if (LawHaveWord || LawHaveNoWord) {
+                              navigation.push(`accessLaw`, {
+                                screen: info3[correctIndex]._id,
+                              });
+                              ModalVisibleStatus.updateModalStatus(false);
+                            }
+                          }}>
+                          <Text
+                            style={{
+                              ...styles.ModalInfoContentLawRelated,
+                              fontWeight:
+                                LawHaveNoWord || LawHaveWord ? 'bold' : '300',
+                            }}>
+                            -{' '}
+                            {
+                              LawHaveNoWord
+                                ? LawHaveNoWord
+                                : LawHaveWord
+                                ? LawHaveWord
+                                : nameLaw
+
+                              // info3[nameLaw] ? info3[nameLaw] : nameLaw
+                            }
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                </View>
+              </View>
+            )}
+            <TouchableOpacity
+              onPress={async () => {
+                ModalVisibleStatus.updateModalStatus(false);
+              }}
               style={{
-                padding: 20,
-                paddingTop: 30,
-                paddingBottom: 20,
-                // backgroundColor: 'blue',
+                padding: 5,
+                marginTop: 30,
+                backgroundColor: 'white', //#778899
+                // backgroundColor: '#00CC33',
+                alignItems: 'center',
+                width: 100,
+                height: 35,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 10,
+                // borderColor:'#555555',
+                // borderWidth:1,
+
+                shadowColor: 'gray',
+                shadowOpacity: 1,
+                shadowOffset: {
+                  width: 1,
+                  height: 1,
+                },
+                shadowRadius: 4,
+                elevation: 2,
               }}>
               <Text
                 style={{
-                  textAlign: 'center',
-                  fontSize: 23,
-                  fontWeight: 'bold',
+                  // backgroundColor: 'red',
+                  // paddingLeft: 10,
+                  // paddingRight: 5,
+                  fontSize: 15,
                   color: 'black',
+                  fontWeight: 'bold',
                 }}>
-                THÔNG TIN CHI TIẾT
+                Đóng
               </Text>
-            </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                paddingTop: 10,
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-                // backgroundColor: 'green',
-                paddingLeft: '5%',
-                paddingRight: '5%',
-              }}>
-              <View style={{...styles.ModalInfoContainer, borderTopWidth: 2}}>
-                <View style={{width: '40%', justifyContent: 'center'}}>
-                  <Text style={styles.ModalInfoTitle}>Tên gọi:</Text>
-                </View>
-                <View style={{flex: 1}}>
-                  <Text style={styles.ModalInfoContent}>
-                    {Info && Info['lawNameDisplay']}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.ModalInfoContainer}>
-                <View style={{width: '40%', justifyContent: 'center'}}>
-                  <Text style={styles.ModalInfoTitle}>Trích yếu nội dung:</Text>
-                </View>
-                <View style={{flex: 1}}>
-                  <Text style={styles.ModalInfoContent}>
-                    {Info && Info['lawDescription']}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.ModalInfoContainer}>
-                <View style={{width: '40%'}}>
-                  <Text style={styles.ModalInfoTitle}>Ngày ký:</Text>
-                </View>
-                <View style={{flex: 1}}>
-                  <Text style={styles.ModalInfoContent}>
-                    {Info &&
-                      new Date(Info['lawDaySign']).toLocaleDateString('vi-VN')}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.ModalInfoContainer}>
-                <View style={{width: '40%'}}>
-                  <Text style={styles.ModalInfoTitle}>Ngày có hiệu lực:</Text>
-                </View>
-                <View style={{flex: 1}}>
-                  <Text style={styles.ModalInfoContent}>
-                    {Info &&
-                      new Date(Info['lawDayActive']).toLocaleDateString(
-                        'vi-VN',
-                      )}
-                  </Text>
-                </View>
-              </View>
-              {Info['lawNumber'] && (
-                <View style={styles.ModalInfoContainer}>
-                  <View style={{width: '40%'}}>
-                    <Text style={styles.ModalInfoTitle}>Số văn bản:</Text>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <Text style={styles.ModalInfoContent}>
-                      {Info && !Info['lawNumber'].match(/^0001\\HP/gim)
-                        ? Info['lawNumber']
-                        : ''}
-                    </Text>
-                  </View>
-                </View>
-              )}
-
-              <View style={styles.ModalInfoContainer}>
-                <View style={{width: '40%'}}>
-                  <Text style={styles.ModalInfoTitle}>Tên người ký:</Text>
-                </View>
-                <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
-                  {Info && !Array.isArray(Info['nameSign']) ? (
-                    <Text style={styles.ModalInfoContent}>
-                      {Info['nameSign']}
-                    </Text>
-                  ) : (
-                    Info['nameSign'] &&
-                    Info['nameSign'].map((key, i) => (
-                      <View key={`${i}nameSign`}>
-                        <Text style={{...styles.ModalInfoContentLawRelated}}>
-                          {`- ${key}`}
-                        </Text>
-                      </View>
-                    ))
-                  )}
-                </View>
-              </View>
-
-              <View style={styles.ModalInfoContainer}>
-                <View style={{width: '40%'}}>
-                  <Text style={styles.ModalInfoTitle}>Chức vụ người ký:</Text>
-                </View>
-                <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
-                  {Info && !Array.isArray(Info['roleSign']) ? (
-                    <Text style={styles.ModalInfoContent}>
-                      {Info['roleSign']}
-                    </Text>
-                  ) : (
-                    Info['roleSign'] &&
-                    Info['roleSign'].map((key, i) => (
-                      <View key={`${i}roleSign`}>
-                        <Text style={{...styles.ModalInfoContentLawRelated}}>
-                          {`- ${key}`}
-                        </Text>
-                      </View>
-                    ))
-                  )}
-                </View>
-              </View>
-              <View style={{...styles.ModalInfoContainer}}>
-                <View style={{width: '40%'}}>
-                  <Text style={{...styles.ModalInfoTitle}}>
-                    Cơ quan ban hành:
-                  </Text>
-                </View>
-                <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
-                  {Info && !Array.isArray(Info['unitPublish']) ? (
-                    <Text style={styles.ModalInfoContent}>
-                      {Info['unitPublish']}
-                    </Text>
-                  ) : (
-                    Info['unitPublish'] &&
-                    Info['unitPublish'].map((key, i) => (
-                      <View key={`${i}unitPublish`}>
-                        <Text style={{...styles.ModalInfoContentLawRelated}}>
-                          {`- ${key}`}
-                        </Text>
-                      </View>
-                    ))
-                  )}
-                </View>
-              </View>
-              {Info && Object.keys(Info).includes('lawRelated') && (
-                <View
-                  style={{...styles.ModalInfoContainer, borderBottomWidth: 2}}>
-                  <View style={{width: '40%'}}>
-                    <Text style={styles.ModalInfoTitle}>
-                      Văn bản liên quan:
-                    </Text>
-                  </View>
-                  <View style={{flex: 1, paddingBottom: 10, paddingTop: 10}}>
-                    {Info &&
-                      Info['lawRelated'].map((key, i) => {
-                        let nameLaw = key;
-
-                        let LawHaveWord;
-                        let LawHaveNoWord;
-                        let correctIndex;
-                        for (let a = 0; a < info3.length; a++) {
-                          if (
-                            info3[a]['info']['lawNameDisplay'].match(
-                              new RegExp(`^${key}`, 'gim'),
-                            )
-                          ) {
-                            correctIndex = a;
-                            LawHaveWord = info3[a]['info']['lawNameDisplay'];
-                            break;
-                          } else if (
-                            info3[a]['info']['lawDescription'].match(
-                              new RegExp(`^${key}`, 'gim'),
-                            )
-                          ) {
-                            correctIndex = a;
-                            LawHaveWord = info3[a]['info']['lawNameDisplay'];
-                          } else if (
-                            info3[a]['info']['lawNumber'].match(
-                              new RegExp(`^${key}`, 'gim'),
-                            )
-                          ) {
-                            correctIndex = a;
-                            LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
-                          }
-                        }
-
-                        return (
-                          <TouchableOpacity
-                            key={`${i}lawRelated`}
-                            onPress={() => {
-                              if (LawHaveWord || LawHaveNoWord) {
-                                navigation.push(`accessLaw`, {
-                                  screen: info3[correctIndex]._id,
-                                });
-                                ModalVisibleStatus.updateModalStatus(false);
-                              }
-                            }}>
-                            <Text
-                              style={{
-                                ...styles.ModalInfoContentLawRelated,
-                                fontWeight:
-                                  LawHaveNoWord || LawHaveWord ? 'bold' : '300',
-                              }}>
-                              -{' '}
-                              {
-                                LawHaveNoWord
-                                  ? LawHaveNoWord
-                                  : LawHaveWord
-                                  ? LawHaveWord
-                                  : nameLaw
-
-                                // info3[nameLaw] ? info3[nameLaw] : nameLaw
-                              }
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      })}
-                  </View>
-                </View>
-              )}
-              <TouchableOpacity
-                onPress={async () => {
-                  ModalVisibleStatus.updateModalStatus(false);
-                }}
-                style={{
-                  padding: 5,
-                  marginTop: 30,
-                  backgroundColor: 'white', //#778899
-                  // backgroundColor: '#00CC33',
-                  alignItems: 'center',
-                  width: 100,
-                  height: 35,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 10,
-                  // borderColor:'#555555',
-                  // borderWidth:1,
-
-                  shadowColor: 'gray',
-                  shadowOpacity: 1,
-                  shadowOffset: {
-                    width: 1,
-                    height: 1,
-                  },
-                  shadowRadius: 4,
-                  elevation: 2,
-                }}>
-                <Text
-                  style={{
-                    // backgroundColor: 'red',
-                    // paddingLeft: 10,
-                    // paddingRight: 5,
-                    fontSize: 15,
-                    color: 'black',
-                    fontWeight: 'bold',
-                  }}>
-                  Đóng
-                </Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </Modal>
+        </View>
+      </ScrollView>
+    </Modal>
 
+<<<<<<< HEAD
       <Animated.View style={{marginBottom: MagginBottom}}>
         <ScrollView
           onScroll={event => {
@@ -1305,45 +2264,98 @@ export default function Detail() {
                       onPress={() => {
                         collapse(i);
                         // setTittle(i);
-                      }}>
-                      <Text
-                        // key={`${i}bb`}
-                        style={{
-                          fontSize: 18,
-                          color: 'black',
-                          fontWeight: 'bold',
-                          padding: 9,
-                          textAlign: 'center',
-                        }}>
-                        {Object.keys(key)[0].toUpperCase()}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
+=======
+    { Boolean(Content.length) &&
+     
+     <View
+     style={{
+      minHeight:heightDevice-headerHeight
+      
+    }}
+     >
 
-                  {Object.keys(key)[0].match(/^phần thứ .*/gim)
-                    ? b(key, i, Object.keys(key)[0])
-                    : Object.keys(key)[0].match(/^chương .*/gim)
-                    ? a(key, i, Object.keys(key)[0])
-                    : Object.keys(key)[0].match(/^điều .*/gim)
-                    ? c(key, i, Object.keys(key)[0])
-                    : ''}
-                </View>
-              );
-            })}
-        </ScrollView>
-      </Animated.View>
-      {/* {Boolean(searchResultCount) && find && searchResultCount > 1 && (
-        <Animated.View
+    <Animated.View style={{marginBottom: MagginBottom,
+}}>
+      <ScrollView
+        onScroll={event => {
+          {
+            const {y} = event.nativeEvent.contentOffset;
+            setCurrentY(y);
+          }
+        }}
+        
+        ref={list}
+        showsVerticalScrollIndicator={true}
+        
+        >
+        <Text key={'abc'} style={styles.titleText}>
+          {Info && Info['lawNameDisplay']}
+        </Text>
+        {Content &&
+          Content.map((key, i) => {
+            if (i + 1 == Content.length) {
+              // dispatch(noLoading())
+            }
+            return (
+              <View key={`${i}Main`}>
+                {!Object.keys(key)[0].match(/^(Điều|Điều)/gim) && (
+                  <TouchableOpacity
+                    // key={`${i}qq`}
+                    style={styles.chapter}
+                    onPress={() => {
+                      collapse(i);
+                      // setTittle(i);
+                    }}>
+                    <Text
+                      // key={`${i}bb`}
+                      style={{
+                        fontSize: 18,
+                        color: 'black',
+                        fontWeight: 'bold',
+                        padding: 9,
+                        textAlign: 'center',
+>>>>>>> 2f7d0ed05d75c797419a215725361eb4b23fe68c
+                      }}>
+                      {Object.keys(key)[0].toUpperCase()}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+
+                {Object.keys(key)[0].match(/^phần thứ .*/gim)
+                  ? b(key, i, Object.keys(key)[0])
+                  : Object.keys(key)[0].match(/^chương .*/gim)
+                  ? a(key, i, Object.keys(key)[0])
+                  : Object.keys(key)[0].match(/^điều .*/gim)
+                  ? c(key, i, Object.keys(key)[0])
+                  : ''}
+              </View>
+            );
+          })}
+      </ScrollView>
+    </Animated.View>
+    <Animated.View
+      style={{
+        ...styles.findArea,
+        width: widthDevice,
+        transform: [{translateY: transY}],
+        
+      }}>
+      <View
+        // distance={10}
+        // startColor={'gray'}
+        // sides={'top'}
+        style={{...styles.searchView, width: widthDevice}}>
+        {/* <View style={styles.searchView}> */}
+
+        <View
           style={{
-            right: 25,
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'absolute',
-            justifyContent: 'space-between',
-            height: 130,
-            opacity: 0.5,
-            transform: [{translateY: transY}],
-            bottom: 80,
+            flexDirection: 'row',
+            minWidth: 98,
+            width: '20%',
+            justifyContent: 'space-around',
+            height: '100%',
+            alignItems: 'center',
+            alignContent: 'center',
           }}>
           <TouchableOpacity
             style={styles.tabSearch}
@@ -1351,14 +2363,24 @@ export default function Detail() {
               currentSearchPoint == 1
                 ? setCurrentSearchPoint(positionYArr.length)
                 : setCurrentSearchPoint(currentSearchPoint - 1);
+                
+                if ( currentSearchPoint == searchResultCount) {
+                  list.current.scrollTo({
+                    y: positionYArr[currentSearchPoint - 1] ,
+                  });
+                }
+            
             }}>
             <Ionicons
               name="caret-up-outline"
               style={{
-                color: 'rgb(240,240,208)',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: 25,
+                paddingLeft: 15,
+                paddingRight: 15,
+                fontSize: 18,
+                color: '#888888',
+                // textAlign: 'center',
+                // fontWeight: 'bold',
+                // fontSize: 25,
               }}></Ionicons>
           </TouchableOpacity>
           <TouchableOpacity
@@ -1367,42 +2389,83 @@ export default function Detail() {
               currentSearchPoint == positionYArr.length
                 ? setCurrentSearchPoint(1)
                 : setCurrentSearchPoint(currentSearchPoint + 1);
+                if ( currentSearchPoint == searchResultCount) {
+                  list.current.scrollTo({
+                    y: positionYArr[currentSearchPoint - 1] ,
+                  });
+                }
             }}>
             <Ionicons
               name="caret-down-outline"
               style={{
-                color: 'rgb(240,240,208)',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: 25,
+                paddingLeft: 15,
+                paddingRight: 15,
+                fontSize: 18,
+                color: '#888888',
+                // textAlign: 'center',
+                // fontWeight: 'bold',
+                // fontSize: 25,
               }}></Ionicons>
           </TouchableOpacity>
-        </Animated.View>
-      )} */}
+        </View>
 
-      <Animated.View
-        style={{
-          ...styles.findArea,
-          width: widthDevice,
-          transform: [{translateY: transY}],
-        }}>
-        <View
-          // distance={10}
-          // startColor={'gray'}
-          // sides={'top'}
-          style={{...styles.searchView, width: widthDevice}}>
-          {/* <View style={styles.searchView}> */}
-
+        <View style={styles.inputArea}>
+          <View style={{flexDirection: 'row', width: '89%'}}>
+            <TextInput
+              ref={textInputFind}
+              selectTextOnFocus={true}
+              style={{
+                width: '90%',
+                color: 'black',
+                height: 35,
+                fontSize: 13,
+                padding: 0,
+                paddingLeft: 10,
+              }}
+              onChangeText={text => setInput(text)}
+              autoFocus={false}
+              value={input}
+              placeholder=" Vui lòng nhập từ khóa ..."
+              placeholderTextColor={'gray'}
+              onSubmitEditing={() => pushToSearch()}></TextInput>
+            <TouchableOpacity
+              style={{
+                color: 'white',
+                fontSize: 16,
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                right: 0,
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                setInput('');
+                textInputFind.current.focus();
+              }}>
+              {input && (
+                <Ionicons
+                  name="close-circle-outline"
+                  style={{
+                    color: 'black',
+                    fontSize: 20,
+                    textAlign: 'center',
+                    width: '100%',
+                    height: 20,
+                  }}></Ionicons>
+              )}
+            </TouchableOpacity>
+          </View>
           <View
             style={{
-              flexDirection: 'row',
-              minWidth: 98,
-              width: '20%',
-              justifyContent: 'space-around',
-              height: '100%',
-              alignItems: 'center',
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
               alignContent: 'center',
+              padding: 0,
+              left: 0,
+              alignItems: 'center',
             }}>
+<<<<<<< HEAD
             <TouchableOpacity
               style={styles.tabSearch}
               onPress={() => {
@@ -1501,267 +2564,274 @@ export default function Detail() {
               </TouchableOpacity>
             </View>
             <View
+=======
+            <Text
+>>>>>>> 2f7d0ed05d75c797419a215725361eb4b23fe68c
               style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignContent: 'center',
-                padding: 0,
-                left: 0,
-                alignItems: 'center',
+                color: 'black',
+                fontSize: 8,
+                textAlign: 'center',
+                // minWidth:18
               }}>
-              <Text
-                style={{
-                  color: 'black',
-                  fontSize: 8,
-                  textAlign: 'center',
-                  // minWidth:18
-                }}>
-                {searchResultCount
-                  ? `${currentSearchPoint}`
-                  : searchResultCount}
-              </Text>
-              <Text
-                style={{
-                  color: 'black',
-                  fontSize: 8,
-                  textAlign: 'center',
-                  borderTopColor: 'gray',
-                  borderTopWidth: 1,
-                  // minWidth:18,
-                }}>
-                {searchResultCount ? `${searchResultCount}` : searchResultCount}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
-            <TouchableOpacity
-              style={styles.searchBtb}
-              onPress={() => {
-                pushToSearch();
+              {searchResultCount
+                ? `${currentSearchPoint}`
+                : searchResultCount}
+            </Text>
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 8,
+                textAlign: 'center',
+                borderTopColor: 'gray',
+                borderTopWidth: 1,
+                // minWidth:18,
               }}>
-              <Ionicons
-                name="return-down-forward-outline"
-                style={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                }}></Ionicons>
-            </TouchableOpacity>
+              {searchResultCount ? `${searchResultCount}` : searchResultCount}
+            </Text>
           </View>
         </View>
-      </Animated.View>
-      <View style={styles.functionTab}>
-        {!onlyArticle && (
+        <View
+          style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
           <TouchableOpacity
-            style={styles.tab}
+            style={styles.searchBtb}
             onPress={() => {
-              setFind(false);
-
-              let timeOut = setTimeout(() => {
-                setShowArticle(false);
-                return () => {};
-              }, 600);
-
-              setTittleArray([]);
-              Shrink();
-
-              Animated.timing(animatedForNavi, {
-                toValue: 0,
-                // toValue:100,
-                duration: 600,
-                useNativeDriver: false,
-              }).start();
+              pushToSearch();
             }}>
-            {/* <Text style={styles.innerTab}>S</Text> */}
             <Ionicons
-              name="chevron-collapse-outline"
-              style={styles.innerTab}></Ionicons>
-          </TouchableOpacity>
-        )}
-        {!onlyArticle && (
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => {
-              setTittleArray([]);
-              setTittleArray2([]);
-              setFind(false);
-              let timeOut = setTimeout(() => {
-                setShowArticle(false);
-                return () => {};
-              }, 600);
-
-              Animated.timing(animatedForNavi, {
-                toValue: 0,
-                duration: 600,
-                useNativeDriver: false,
-              }).start();
-            }}>
-            {/* <Text style={styles.innerTab}>E</Text> */}
-            <Ionicons
-              name="chevron-expand-outline"
-              style={styles.innerTab}></Ionicons>
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() => {
-            list.current.scrollTo({y: 0});
-            let timeOut = setTimeout(() => {
-              setShowArticle(false);
-              return () => {};
-            }, 600);
-          }}>
-          <Ionicons name="arrow-up-outline" style={styles.innerTab}></Ionicons>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          // style={find ? styles.ActiveTab : styles.tab}
-          style={styles.tab}
-          onPress={() => {
-            setFind(!find);
-            let timeOut = setTimeout(() => {
-              setShowArticle(false);
-              return () => {};
-            }, 600);
-            Animated.timing(animatedForNavi, {
-              toValue: !find ? 80 : 0,
-              duration: 600,
-              useNativeDriver: false,
-            }).start();
-
-            setTittleArray([]);
-            setTittleArray2([]);
-            // Shrink();
-            setGo(false);
-          }}>
-          {/* <Text style={styles.innerTab}>Find</Text> */}
-          <Ionicons
-            name="search-outline"
-            style={find ? styles.ActiveInner : styles.innerTab}></Ionicons>
-        </TouchableOpacity>
-        <TouchableOpacity
-          // style={showArticle && !find ? styles.ActiveTab : styles.tab}
-          style={styles.tab}
-          onPress={() => {
-            if (showArticle) {
-              let timeOut = setTimeout(() => {
-                setShowArticle(false);
-                return () => {};
-              }, 600);
-            } else {
-              setShowArticle(true);
-            }
-            setFind(false);
-            Keyboard.dismiss();
-            Animated.timing(animatedForNavi, {
-              toValue: !showArticle ? -100 : 0,
-              duration: 600,
-              useNativeDriver: false,
-            }).start();
-
-            setTittleArray([]);
-            setTittleArray2([]);
-            // Shrink();
-          }}>
-          <Ionicons
-            name="menu-outline"
-            style={
-              showArticle ? styles.ActiveInner : styles.innerTab
-            }></Ionicons>
-        </TouchableOpacity>
-      </View>
-      <>
-        {showArticle && (
-          <>
-            <Animated.View
+              name="return-down-forward-outline"
               style={{
-                backgroundColor: 'rgb(245,245,247)',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 18,
+              }}></Ionicons>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Animated.View>
+
+    <View style={{...styles.functionTab,paddingBottom:3 + insets.bottom/2,height: 40+ insets.bottom/2,}}>
+      {!onlyArticle && (
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => {
+            setFind(false);
+
+            let timeOut = setTimeout(() => {
+              setShowArticle(false);
+              return () => {};
+            }, 600);
+
+            setTittleArray([]);
+            Shrink();
+
+            Animated.timing(animatedForNavi, {
+              toValue: 0,
+              // toValue:100,
+              duration: 600,
+              useNativeDriver: false,
+            }).start();
+          }}>
+          {/* <Text style={styles.innerTab}>S</Text> */}
+          <Ionicons
+            name="chevron-collapse-outline"
+            style={styles.innerTab}></Ionicons>
+        </TouchableOpacity>
+      )}
+      {!onlyArticle && (
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => {
+            setTittleArray([]);
+            setTittleArray2([]);
+            setFind(false);
+            let timeOut = setTimeout(() => {
+              setShowArticle(false);
+              return () => {};
+            }, 600);
+
+            Animated.timing(animatedForNavi, {
+              toValue: 0,
+              duration: 600,
+              useNativeDriver: false,
+            }).start();
+          }}>
+          {/* <Text style={styles.innerTab}>E</Text> */}
+          <Ionicons
+            name="chevron-expand-outline"
+            style={styles.innerTab}></Ionicons>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity
+        style={styles.tab}
+        onPress={() => {
+          list.current.scrollTo({y: 0});
+          let timeOut = setTimeout(() => {
+            setShowArticle(false);
+            return () => {};
+          }, 600);
+        }}>
+        <Ionicons name="arrow-up-outline" style={styles.innerTab}></Ionicons>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        // style={find ? styles.ActiveTab : styles.tab}
+        style={styles.tab}
+        onPress={() => {
+          setFind(!find);
+          let timeOut = setTimeout(() => {
+            setShowArticle(false);
+            return () => {};
+          }, 600);
+          Animated.timing(animatedForNavi, {
+            toValue: !find ? 80 : 0,
+            duration: 600,
+            useNativeDriver: false,
+          }).start();
+
+          setTittleArray([]);
+          setTittleArray2([]);
+          // Shrink();
+          setGo(false);
+        }}>
+        {/* <Text style={styles.innerTab}>Find</Text> */}
+        <Ionicons
+          name="search-outline"
+          style={find ? styles.ActiveInner : styles.innerTab}></Ionicons>
+      </TouchableOpacity>
+      <TouchableOpacity
+        // style={showArticle && !find ? styles.ActiveTab : styles.tab}
+        style={styles.tab}
+        onPress={() => {
+          if (showArticle) {
+            let timeOut = setTimeout(() => {
+              setShowArticle(false);
+              return () => {};
+            }, 600);
+          } else {
+            setShowArticle(true);
+          }
+          setFind(false);
+          Keyboard.dismiss();
+          Animated.timing(animatedForNavi, {
+            toValue: !showArticle ? -100 : 0,
+            duration: 600,
+            useNativeDriver: false,
+          }).start();
+
+          setTittleArray([]);
+          setTittleArray2([]);
+          // Shrink();
+        }}>
+        <Ionicons
+          name="menu-outline"
+          style={
+            showArticle ? styles.ActiveInner : styles.innerTab
+          }></Ionicons>
+      </TouchableOpacity>
+    </View>
+    </View>
+}
+    {/* </KeyboardAvoidingView> */}
+    <>
+      {showArticle && (
+        <>
+          <Animated.View
+            style={{
+              backgroundColor: 'rgb(245,245,247)',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              display: 'flex',
+              position: 'absolute',
+              opacity: Opacity,
+            }}>
+            <TouchableOpacity //overlay
+              style={{
                 left: 0,
                 right: 0,
                 top: 0,
                 bottom: 0,
                 display: 'flex',
                 position: 'absolute',
-                opacity: Opacity,
-              }}>
-              <TouchableOpacity //overlay
-                style={{
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  position: 'absolute',
-                }}
-                onPress={() => {
-                  // Keyboard.dismiss()
-                  let timeOut = setTimeout(() => {
-                    setShowArticle(false);
-                    return () => {};
-                  }, 600);
-                  Animated.timing(animatedForNavi, {
-                    toValue: !showArticle ? -100 : 0,
-                    duration: 600,
-                    useNativeDriver: false,
-                  }).start();
-                }}></TouchableOpacity>
-            </Animated.View>
+              }}
+              onPress={() => {
+                // Keyboard.dismiss()
+                let timeOut = setTimeout(() => {
+                  setShowArticle(false);
+                  return () => {};
+                }, 600);
+                Animated.timing(animatedForNavi, {
+                  toValue: !showArticle ? -100 : 0,
+                  duration: 600,
+                  useNativeDriver: false,
+                }).start();
+              }}></TouchableOpacity>
+          </Animated.View>
 
-            <Animated.View
+          <Animated.View
+            style={{
+              ...styles.listArticle,
+              width: (widthDevice / 100) * 60,
+              transform: [{translateX: transX}],
+              marginBottom: 40 + insets.bottom/2,
+            }}>
+            <View
               style={{
-                ...styles.listArticle,
-                width: (widthDevice / 100) * 60,
-                transform: [{translateX: transX}],
+                flexDirection: 'row',
+                backgroundColor: 'black',
+                height: 50,
               }}>
-              <View
+              <TextInput
+                ref={textInputArticle}
+                onChangeText={text => setInputSearchArtical(text)}
+                selectTextOnFocus={true}
+                value={inputSearchArtical}
                 style={{
-                  flexDirection: 'row',
-                  backgroundColor: 'black',
-                  height: 50,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  color: 'white',
+                  width: '85%',
+                  alignItems: 'center',
+                }}
+                placeholder=" Nhập từ điều luật ..."
+                placeholderTextColor={'gray'}></TextInput>
+              <TouchableOpacity
+                onPress={() => {
+                  setInputSearchArtical('');
+                  textInputArticle.current.focus();
+                }}
+                style={{
+                  width: '15%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                <TextInput
-                  ref={textInputArticle}
-                  onChangeText={text => setInputSearchArtical(text)}
-                  selectTextOnFocus={true}
-                  value={inputSearchArtical}
-                  style={{
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    color: 'white',
-                    width: '85%',
-                    alignItems: 'center',
-                  }}
-                  placeholder=" Nhập từ điều luật ..."
-                  placeholderTextColor={'gray'}></TextInput>
-                <TouchableOpacity
-                  onPress={() => {
-                    setInputSearchArtical('');
-                    textInputArticle.current.focus();
-                  }}
-                  style={{
-                    width: '15%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {inputSearchArtical && (
-                    <Text
-                      style={{
-                        height: 20,
-                        width: 20,
-                        color: 'white',
-                        textAlign: 'center',
-                        verticalAlign: 'middle',
-                        backgroundColor: 'gray',
-                        borderRadius: 25,
-                      }}>
-                      X
-                    </Text>
-                  )}
-                </TouchableOpacity>
+                {inputSearchArtical && (
+                  <Text
+                    style={{
+                      height: 20,
+                      width: 20,
+                      color: 'white',
+                      textAlign: 'center',
+                      verticalAlign: 'middle',
+                      backgroundColor: 'gray',
+                      borderRadius: 25,
+                    }}>
+                    X
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+            <ScrollView 
+            // keyboardShouldPersistTaps="handled"
+            >
+              <View style={{height: 7}}>
+                {
+                  // đây là hàng ảo để thêm margin
+                }
               </View>
+<<<<<<< HEAD
               <ScrollView
               // keyboardShouldPersistTaps="handled"
               >
@@ -1795,7 +2865,39 @@ export default function Detail() {
           </>
         )}
       </>
+=======
+              {(SearchArticalResult || positionYArrArtical).map((key, i) => {
+                return (
+                  <TouchableOpacity
+                    key={`${i}SearchArtical`}
+                    style={styles.listItem}
+                    onPress={() => {
+                      setShowArticle(false);
+                      list.current.scrollTo({y: Object.values(key) - 70});
+                      Animated.timing(animatedForNavi, {
+                        toValue: !showArticle ? -100 : 0,
+                        duration: 600,
+                        useNativeDriver: false,
+                      }).start();
+                    }}>
+                    <Text style={styles.listItemText}>
+                      {Object.keys(key)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </Animated.View>
+        </>
+      )}
+>>>>>>> 2f7d0ed05d75c797419a215725361eb4b23fe68c
     </>
+  </KeyboardAvoidingView>
+
+)
+
+  )
+
   );
 }
 
@@ -1874,10 +2976,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     bottom: 0,
-    backgroundColor: '#00CD66',
-    height: 40,
+    backgroundColor: 'white', // #00CD66
+    
     paddingTop: 3,
+<<<<<<< HEAD
     paddingBottom: 3,
+=======
+    
+>>>>>>> 2f7d0ed05d75c797419a215725361eb4b23fe68c
     zIndex: 10,
     borderTopWidth: 2,
     borderTopColor: 'black',
@@ -1911,7 +3017,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   ActiveInner: {
-    color: 'white',
+    color: '#00CD66',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 18,
@@ -1982,7 +3088,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     display: 'flex',
     right: 0,
-    marginBottom: 40,
+    
   },
   listItem: {
     display: 'flex',
