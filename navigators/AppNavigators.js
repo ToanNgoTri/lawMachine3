@@ -194,7 +194,7 @@ const AppNavigators = () => {
         lazy: true,
         tabBarIndicatorStyle: {
           backgroundColor: '#336600',
-          top: -1,
+          top: -2,
           margin: 0,
           padding: 0,
         },
