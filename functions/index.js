@@ -24,7 +24,7 @@ admin.initializeApp({
 });
 
 const client = new MongoClient(
-    "mongodb+srv://gusteixeira25:JPwO1gvfCAjiuXKo@testdatabase.moky4.mongodb.net/"
+    "mongodb+srv://gusteixeira25:JPwO1gvfCAjiuXKo@lawdatabase.jnsdwt3.mongodb.net/?retryWrites=true&w=majority&appName=LawDatabase"
   );
 
   exports.searchLaw = onRequest(async (req, res) => {
@@ -88,7 +88,7 @@ exports.searchContent = onRequest(async (req, res) => {
     try {
       const database = client.db("LawMachine");
       const LawSearch = database.collection("LawSearch");
-      LawSearch.find({ "fullText": new RegExp(`${req.body.input}`, "i") }).collation({ locale: 'vi' })
+      LawSearch.find({ fullText: new RegExp(`${req.body.input}`, "i") })
         .project({ info: 1 })
         .toArray()
         .then((o) => res.json(o));

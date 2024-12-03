@@ -144,8 +144,8 @@ export function* mySaga1(state,action){
     //   },
     //   // body:JSON.stringify({input:state.input})
     // })
-  
-
+    
+    
     let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchContent`,{
       method: 'POST',
       headers: {
@@ -180,6 +180,7 @@ export function* mySaga2(state,action){
   
 
     let info = yield  fetch(`https://us-central1-project2-197c0.cloudfunctions.net/searchLaw`,{
+    // let info = yield  fetch(`http://192.168.1.10:5001/project2-197c0/us-central1/searchLaw`,{
       method: 'POST',
       headers: {
         Accept: 'application/json',

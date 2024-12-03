@@ -57,6 +57,8 @@ export function Detail1({}) {
   const dispatch = useDispatch();
 
   const {loading1, result} = useSelector(state => state['searchContent']);
+  console.log('result',result);
+  console.log('input',input);
 
   const navigation = useNavigation();
   
