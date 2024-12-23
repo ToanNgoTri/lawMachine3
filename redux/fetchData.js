@@ -71,8 +71,8 @@ export const searchLaw = createSlice({
 }
 })
 
-export const stackscreen = createSlice({    // không càn nữa
-  name: 'stackscreen',     
+export const getlastedlaws = createSlice({
+  name: 'getlastedlaws',     
   initialState: {
     loading3: false,
     info3:[],
@@ -80,13 +80,11 @@ export const stackscreen = createSlice({    // không càn nữa
   reducers: {
     loader3: (state,action) => {
       state.loading3= true;
-
     },
 
     handle3: (state,action) => {
       state.info3=action.payload.b;
       state.loading3= false;
-
     },
 }
 })
@@ -198,29 +196,45 @@ export function* mySaga2(state,action){
 }
 
 
+// export function* mySaga3(state,action){
+//   yield put(loader3())
 
 
-
-
-export function* mySaga3(state,action){
-  yield put(loader3())
-
-
-    let info = yield fetch(`https://us-central1-project2-197c0.cloudfunctions.net/stackscreen`,{
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      // body:JSON.stringify({screen:1})
-    })
+//     let info = yield fetch(`https://us-central1-project2-197c0.cloudfunctions.net/stackscreen`,{
+//       method: 'GET',
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//       // body:JSON.stringify({screen:1})
+//     })
     
-    let b = yield info.json()
+//     let b = yield info.json()
 
 
-    yield put(handle3({b}))
-  }
+//     yield put(handle3({b}))
+//   }
 
+
+  export function* mySaga3(state,action){
+    yield put(loader3())
+  
+  
+      let info = yield fetch(`https://us-central1-project2-197c0.cloudfunctions.net/getlastedlaws`,{
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body:JSON.stringify({screen:1})
+      })
+      
+      let b = yield info.json()
+  
+  
+      yield put(handle3({b}))
+    }
+  
 
 export function* saga(){
   yield takeEvery('read',mySaga) 
@@ -239,13 +253,15 @@ export function* saga2(){
 
 }
 
+
 export function* saga3(){
-  yield takeEvery('stackscreen',mySaga3)
+  yield takeEvery('getlastedlaws',mySaga3)
 
 }
+
 
   
 export const {loader,handle,noLoading} = read.actions;
 export const {loader1,handle1} = searchContent.actions;
 export const {loader2,handle2} = searchLaw.actions;
-export const {loader3,handle3} = stackscreen.actions;
+export const {loader3,handle3} = getlastedlaws.actions;

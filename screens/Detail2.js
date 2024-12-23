@@ -23,8 +23,8 @@ export function Detail2({}) {
   const {loading2, info} = useSelector(state => state['searchLaw']);
 // console.log('info',info);
 
-  const {loading3, info3} = useSelector(state => state['stackscreen']);
-  // console.log('info3',info3);
+  const {loading3, info3} = useSelector(state => state['getlastedlaws']);
+  console.log('info3',info3);
   const [input, setInput] = useState(undefined);
   const [valueInput, setValueInput] = useState('');
 
@@ -122,7 +122,7 @@ export function Detail2({}) {
                       //   : styles.highlight
                       
                         
-                      i2.match(/aa/)?{...styles.chapterText,backgroundColor:'yellow'}:{backgroundColor:'yellow'}
+                      i2.match(/aa/)?{...styles.chapterText,backgroundColor:'yellow',}:{backgroundColor:'yellow'}
                       
                     }
                     key={`${i}gmi`}
@@ -148,7 +148,8 @@ export function Detail2({}) {
                 </Text>,
               );
             }, []);
-          return <View ><Text >{searchedPara}</Text></View>;
+          return <View ><Text style={{    textAlign:'justify'
+          }} >{'   '}{searchedPara}</Text></View>;
           // return <View >{searchedPara}</View>;
           // return <Text >{searchedPara}</Text>;
         } else {
@@ -234,6 +235,10 @@ return lawObject
     chooseDisplayKindLaw();
   }, [choosenKindLaw]);
 
+  useEffect(() => {
+    dispatch({type: 'getlastedlaws'});
+  }, [])
+  
   function chooseDisplayKindLaw() {
     // 1 là luật, 2 là nd, 3 là TT
 
@@ -992,6 +997,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 14,
+    textAlign:'justify'
     // backgroundColor:'blue'
   },
   // chapterArrow: {

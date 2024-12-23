@@ -885,7 +885,7 @@ export default function Detail() {
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 10,
-        height:heightDevice
+        // height:heightDevice
         
       }}>
       <Text
@@ -1779,7 +1779,7 @@ export default function Detail() {
                   style={styles.listItem}
                   onPress={() => {
                     setShowArticle(false);
-                    list.current.scrollTo({y: Object.values(key) - 70});
+                    list.current.scrollTo({y: Object.values(key) - 55});
                     Animated.timing(animatedForNavi, {
                       toValue: !showArticle ? -100 : 0,
                       duration: 600,
@@ -1819,7 +1819,7 @@ export default function Detail() {
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 10,
-          height:heightDevice
+          // height:heightDevice
           
         }}>
         <Text
@@ -2718,7 +2718,7 @@ export default function Detail() {
                     style={styles.listItem}
                     onPress={() => {
                       setShowArticle(false);
-                      list.current.scrollTo({y: Object.values(key) - 70});
+                      list.current.scrollTo({y: Object.values(key) - 55});
                       Animated.timing(animatedForNavi, {
                         toValue: !showArticle ? -100 : 0,
                         duration: 600,

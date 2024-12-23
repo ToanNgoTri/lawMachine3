@@ -10,6 +10,7 @@ import {
   Keyboard,
   Animated,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
 import dataOrg from '../data/data.json';
@@ -28,8 +29,9 @@ export default function Home({}) {
 
   const [inputSearchLaw, setInputSearchLaw] = useState('');
   const [searchLawResult, setSearchLawResult] = useState([]);
+  const [showPolicy, setShowPolicy] = useState(false);
 
-  const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
+  const insets = useSafeAreaInsets(); // lất chiều cao để menu top iphone
 
   const ScrollViewToScroll = useRef(null);
   useScrollToTop(ScrollViewToScroll);
@@ -134,6 +136,27 @@ export default function Home({}) {
 
   // const realm = new Realm(realmConfig);
 
+  async function getPolicyAppear() {
+    if (await FileSystem.exists(Dirs.CacheDir + '/Appear.txt', 'utf8')) {
+      // const FileInfoStringContent = await FileSystem.readFile(
+      //   Dirs.CacheDir + '/Content.txt',
+      //   'utf8',
+      // );
+      // if (FileInfoStringContent) {
+      //   return {
+      //     status: true,
+      //   };
+      //   // f = JSON.parse(FileInfoStringInfo)
+      // }
+
+      return false
+    }else{
+      return true
+    }
+  }
+
+
+
   useEffect(() => {
     const listener = navigation.addListener('focus', () => {
       async function getContentExist() {
@@ -166,10 +189,23 @@ export default function Home({}) {
         }
       });
     });
+
+    getPolicyAppear()
+    .then((status)=> setShowPolicy(status))
   }, []);
 
-  // console.log(insets);
-  
+  const animated = useRef(new Animated.Value(0)).current;
+
+  let Opacity = animated.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0.5, 0],
+  });
+
+  let Scale = animated.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0],
+  });
+
   return (
     <>
       <View
@@ -247,167 +283,176 @@ export default function Home({}) {
         //   onEndReached={ loadMoreItem}
       ></FlatList>
 
-      {/* { (!internetConnected && showWanringInternet) ? (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 40,
-            paddingBottom: 10,
-            paddingTop: 10,
-            left: 30,
-            right: 30,
-            display: 'flex',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            flexDirection: 'row',
-            backgroundColor: 'black',
-            borderRadius: 10,
-          }}>
-          <View
+      {showPolicy && (
+        <>
+          <Animated.View
             style={{
-              width: '12%',
-              alignItems: 'right',
-              justifyContent: 'flex-end',
+              backgroundColor: 'rgb(245,245,247)',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
               display: 'flex',
-              position: 'relative',
-              // backgroundColor:'red',
-              flexDirection: 'row',
+              position: 'absolute',
+              opacity: Opacity,
             }}>
-            <Ionicons
-              name="wifi-outline"
+            <TouchableOpacity //overlay
               style={{
-                color: 'red',
-                fontSize: 27,
-                alignItems: 'right',
-                justifyContent: 'center',
-                // backgroundColor:'white',
-              }}></Ionicons>
-          </View>
-          <Text
-            style={{
-              color: 'white',
-              textAlign: 'center',
-              justifyContent: 'center',
-              width: '60%',
-              // backgroundColor:'green'
-            }}>
-            {'Mất kết nối Internet \n Muốn xem chế độ Offline?'}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {setShowWanringInternet(false)
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                display: 'flex',
+                position: 'absolute',
+              }}
+              // onPress={() => {
+              //   let timeOut = setTimeout(() => {
+              //     setShowPolicy(false);
+              //     return () => {};
+              //   }, 500);
 
-              if(!internetConnected){
-              setContent(Object.keys(dataOrg['LawContent']));
-              // setShowContent(Object.keys(dataOrg['LawContent']).slice(0, 7));
-              // setTotalPaper(Math.floor(Object.keys(dataOrg['LawContent']).length / 7) + 1);
+              //   Animated.timing(animated, {
+              //     toValue: !showPolicy ? 100 : 0,
+              //     // toValue:100,
+              //     duration: 300,
+              //     useNativeDriver: false,
+              //   }).start();
+              // }}
+              ></TouchableOpacity>
+          </Animated.View>
 
-              
-              }
-            
-            }}
-            style={{
-              width: '20%',
-              // backgroundColor:'white',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              // backgroundColor:'green'
-              borderLeftWidth: 2,
-              borderLeftColor: 'white',
-            }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                justifyContent: 'center',
-                // backgroundColor:'yellow',
-                width: '100%',
-                color: 'white',
-                fontWeight: 'bold',
-              }}>
-              Đóng
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        ((internetConnected && showWanringInternet) &&
-        (
           <Animated.View
             style={{
               position: 'absolute',
-              bottom: 40,
-              paddingBottom: 10,
-              paddingTop: 10,
-              left: 30,
-              right: 30,
+              top: 80,
+              bottom: 60,
+              minHeight: 500,
+              right: 50,
+              left: 50,
+              backgroundColor: 'white',
               display: 'flex',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              flexDirection: 'row',
-              backgroundColor: 'black',
-              borderRadius: 10,
-              opacity:Opacity,
-              transform:[{translateY:TranslateY}],
-              zIndex:100
-
+              borderRadius: 20,
+              transform: [{scale: Scale}],
+              overflow: 'hidden',
+              // borderWidth:1,
+              // borderColor:'brown',
+              shadowColor: 'black',
+              shadowOpacity: 1,
+              shadowOffset: {
+                width: 10,
+                height: 10,
+              },
+              shadowRadius: 4,
+              elevation: 20,
             }}>
-            <View
-              style={{
-                width: '12%',
-                alignItems: 'right',
-                justifyContent: 'flex-end',
-                display: 'flex',
-                position: 'relative',
-                // backgroundColor:'red',
-                flexDirection: 'row',
-              }}>
-              <Ionicons
-                name="wifi-outline"
-                style={{
-                  color: 'green',
-                  fontSize: 27,
-                  alignItems: 'right',
-                  justifyContent: 'center',
-                  // backgroundColor:'white',
-                }}></Ionicons>
-            </View>
-            <Text
-              style={{
-                color: 'white',
-                textAlign: 'center',
-                justifyContent: 'center',
-                width: '60%',
-                // backgroundColor:'green'
-              }}>
-              {'Đã kết nối Internet'}
-            </Text>
+            <ScrollView style={{}} showsVerticalScrollIndicator={false}>
+              <View style={{marginBottom: 20, marginTop: 30}}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 30,
+                    textAlign: 'center',
+                  }}>
+                  Lời mở đầu{' '}
+                </Text>
+              </View>
+
+              <View style={{}}>
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    textAlign: 'justify',
+                    lineHeight:23,
+
+                  }}>
+                  {'  '}Các thông tin, nội dung và dịch vụ mà Thư viện Luật cung cấp
+                  chỉ mang tính chất tham khảo, với mục đích đem lại cho người
+                  sử dụng những thông tin tổng quát về các quy định của pháp Thư
+                  viện Luật qua từng thời kỳ. Thêm vào đó, việc thay đổi, bổ
+                  sung các quy định luật pháp là điều không tránh khỏi ở mỗi
+                  giai đoạn phát triển, bởi vậy, mọi trường hợp người sử dụng
+                  muốn vận dụng các quy định pháp luật vào từng trường hợp cụ
+                  thể, nhất thiết phải tham khảo ý kiến của các cơ quan nhà nước
+                  có thẩm quyền hoặc của các chuyên gia tư vấn pháp lý về việc
+                  áp dụng các quy định này.
+                </Text>
+              </View>
+              <View style={{}}>
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    textAlign: 'justify',
+                    lineHeight:23
+                  }}>
+                  {'  '}Mặc dù đã cố gắng hạn chế những sai sót trong quá trình nhập
+                  liệu và đăng tải, các thông tin, nội dung văn bản pháp luật do
+                  Thư viện Luật cung cấp không tránh khỏi những khiếm khuyết hay
+                  sai sót do lỗi đánh máy, trình bày, hay tính đúng sai về hiệu
+                  lực pháp lý của văn bản. Việc người sử dụng chấp nhận sử dụng
+                  dịch vụ của Thư viện Luật ngay từ lần đầu tiên cũng đồng nghĩa
+                  với việc chấp nhận những khiếm khuyết này, cũng như không làm
+                  nảy sinh bất cứ trách nhiệm pháp lý nào của Thư viện Luật với
+                  người sử dụng khi xảy ra thiệt hại (nếu có) từ việc vận dụng
+                  các nội dung, thông tin mà Thư viện Luật cung cấp
+                </Text>
+              </View>
+              <View style={{}}>
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    textAlign: 'justify',
+                    lineHeight:23
+                  }}>
+                  {'   '}Đây là ứng dụng tra cứu Luật của tập thể SViet xây dựng và phát triển. Ứng dụng không
+                  đại diện cho bất kỳ cơ quan nào thuộc Chính phủ. Cuối cùng xin chân thành cảm ơn tất cả các bạn và người dùng ứng dụng đã tin tưởng và ủng hộ chúng tôi!
+                </Text>
+              </View>
+
+            </ScrollView>
             <TouchableOpacity
-              onPress={() => setShowWanringInternet(false)}
               style={{
-                width: '20%',
-                // backgroundColor:'white',
-                height: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                // backgroundColor:'green'
-                borderLeftWidth: 2,
-                borderLeftColor: 'white',
+                backgroundColor: 'green',
+              }}
+              onPress={async() => {
+                let timeOut = setTimeout(() => {
+                  setShowPolicy(false);
+                  return () => {};
+                }, 500);
+                const addContent = await FileSystem.writeFile(
+                  Dirs.CacheDir + '/Appear.txt',
+                  JSON.stringify('abc'),
+                  'utf8',
+                );
+          
+                Animated.timing(animated, {
+                  toValue:showPolicy ? 100 : 0,
+                  // toValue:100,
+                  duration: 300,
+                  useNativeDriver: false,
+                }).start();
               }}>
               <Text
                 style={{
+                  paddingBottom: 10,
+                  paddingTop: 10,
                   textAlign: 'center',
-                  justifyContent: 'center',
-                  // backgroundColor:'yellow',
-                  width: '100%',
                   color: 'white',
                   fontWeight: 'bold',
+                  fontSize: 16,
                 }}>
-                Đóng
+                Chấp nhận chính sách và tiếp tục
+              
               </Text>
             </TouchableOpacity>
           </Animated.View>
-        ))
-      )
-      } */}
+        </>
+      )}
     </>
   );
 }
