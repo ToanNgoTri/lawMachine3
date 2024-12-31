@@ -238,7 +238,7 @@ export default function Detail() {
   const ModalVisibleStatus = useContext(ModalStatus);
 
   const {loading} = useSelector(state => state['read']);
-  const {info3} = useSelector(state => state['stackscreen']);
+  // const {info3} = useSelector(state => state['stackscreen']);
 
 
   async function callOneLaw() {
@@ -1205,61 +1205,60 @@ export default function Detail() {
                   Info['lawRelated'].map((key, i) => {
                     let nameLaw = key;
 
-                    let LawHaveWord;
-                    let LawHaveNoWord;
-                    let correctIndex;
-                    for (let a = 0; a < info3.length; a++) {
-                      if (
-                        info3[a]['info']['lawNameDisplay'].match(
-                          new RegExp(`^${key}`, 'gim'),
-                        )
-                      ) {
-                        correctIndex = a;
-                        LawHaveWord = info3[a]['info']['lawNameDisplay'];
-                        break;
-                      } else if (
-                        info3[a]['info']['lawDescription'].match(
-                          new RegExp(`^${key}`, 'gim'),
-                        )
-                      ) {
-                        correctIndex = a;
-                        LawHaveWord = info3[a]['info']['lawNameDisplay'];
-                      } else if (
-                        info3[a]['info']['lawNumber'].match(
-                          new RegExp(`^${key}`, 'gim'),
-                        )
-                      ) {
-                        correctIndex = a;
-                        LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
-                      }
-                    }
+                    // let LawHaveWord;
+                    // let LawHaveNoWord;
+                    // let correctIndex;
+                    // for (let a = 0; a < info3.length; a++) {
+                    //   if (
+                    //     info3[a]['info']['lawNameDisplay'].match(
+                    //       new RegExp(`^${key}`, 'gim'),
+                    //     )
+                    //   ) {
+                    //     correctIndex = a;
+                    //     LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                    //     break;
+                    //   } else if (
+                    //     info3[a]['info']['lawDescription'].match(
+                    //       new RegExp(`^${key}`, 'gim'),
+                    //     )
+                    //   ) {
+                    //     correctIndex = a;
+                    //     LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                    //   } else if (
+                    //     info3[a]['info']['lawNumber'].match(
+                    //       new RegExp(`^${key}`, 'gim'),
+                    //     )
+                    //   ) {
+                    //     correctIndex = a;
+                    //     LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
+                    //   }
+                    // }
 
                     return (
                       <TouchableOpacity
                         key={`${i}lawRelated`}
                         onPress={() => {
-                          if (LawHaveWord || LawHaveNoWord) {
-                            navigation.push(`accessLaw`, {
-                              screen: info3[correctIndex]._id,
-                            });
-                            ModalVisibleStatus.updateModalStatus(false);
-                          }
+                          // if (LawHaveWord || LawHaveNoWord) {
+                          //   navigation.push(`accessLaw`, {
+                          //     screen: info3[correctIndex]._id,
+                          //   });
+                          //   ModalVisibleStatus.updateModalStatus(false);
+                          // }
                         }}>
                         <Text
                           style={{
                             ...styles.ModalInfoContentLawRelated,
-                            fontWeight:
-                              LawHaveNoWord || LawHaveWord ? 'bold' : '300',
+                            // fontWeight:
+                            //   LawHaveNoWord || LawHaveWord ? 'bold' : '300',
                           }}>
                           -{' '}
                           {
-                            LawHaveNoWord
-                              ? LawHaveNoWord
-                              : LawHaveWord
-                              ? LawHaveWord
-                              : nameLaw
-
-                            // info3[nameLaw] ? info3[nameLaw] : nameLaw
+                            // LawHaveNoWord
+                            //   ? LawHaveNoWord
+                            //   : LawHaveWord
+                            //   ? LawHaveWord
+                            //   : nameLaw
+                            nameLaw
                           }
                         </Text>
                       </TouchableOpacity>
@@ -2139,61 +2138,61 @@ export default function Detail() {
                     Info['lawRelated'].map((key, i) => {
                       let nameLaw = key;
 
-                      let LawHaveWord;
-                      let LawHaveNoWord;
-                      let correctIndex;
-                      for (let a = 0; a < info3.length; a++) {
-                        if (
-                          info3[a]['info']['lawNameDisplay'].match(
-                            new RegExp(`^${key}`, 'gim'),
-                          )
-                        ) {
-                          correctIndex = a;
-                          LawHaveWord = info3[a]['info']['lawNameDisplay'];
-                          break;
-                        } else if (
-                          info3[a]['info']['lawDescription'].match(
-                            new RegExp(`^${key}`, 'gim'),
-                          )
-                        ) {
-                          correctIndex = a;
-                          LawHaveWord = info3[a]['info']['lawNameDisplay'];
-                        } else if (
-                          info3[a]['info']['lawNumber'].match(
-                            new RegExp(`^${key}`, 'gim'),
-                          )
-                        ) {
-                          correctIndex = a;
-                          LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
-                        }
-                      }
+                      // let LawHaveWord;
+                      // let LawHaveNoWord;
+                      // let correctIndex;
+                      // for (let a = 0; a < info3.length; a++) {
+                      //   if (
+                      //     info3[a]['info']['lawNameDisplay'].match(
+                      //       new RegExp(`^${key}`, 'gim'),
+                      //     )
+                      //   ) {
+                      //     correctIndex = a;
+                      //     LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                      //     break;
+                      //   } else if (
+                      //     info3[a]['info']['lawDescription'].match(
+                      //       new RegExp(`^${key}`, 'gim'),
+                      //     )
+                      //   ) {
+                      //     correctIndex = a;
+                      //     LawHaveWord = info3[a]['info']['lawNameDisplay'];
+                      //   } else if (
+                      //     info3[a]['info']['lawNumber'].match(
+                      //       new RegExp(`^${key}`, 'gim'),
+                      //     )
+                      //   ) {
+                      //     correctIndex = a;
+                      //     LawHaveNoWord = info3[a]['info']['lawNameDisplay'];
+                      //   }
+                      // }
 
                       return (
                         <TouchableOpacity
                           key={`${i}lawRelated`}
                           onPress={() => {
-                            if (LawHaveWord || LawHaveNoWord) {
-                              navigation.push(`accessLaw`, {
-                                screen: info3[correctIndex]._id,
-                              });
-                              ModalVisibleStatus.updateModalStatus(false);
-                            }
+                            // if (LawHaveWord || LawHaveNoWord) {
+                            //   navigation.push(`accessLaw`, {
+                            //     screen: info3[correctIndex]._id,
+                            //   });
+                            //   ModalVisibleStatus.updateModalStatus(false);
+                            // }
                           }}>
                           <Text
                             style={{
                               ...styles.ModalInfoContentLawRelated,
-                              fontWeight:
-                                LawHaveNoWord || LawHaveWord ? 'bold' : '300',
-                            }}>
+                              // fontWeight:
+                              //   LawHaveNoWord || LawHaveWord ? 'bold' : '300',
+                            }}
+                            >
                             -{' '}
                             {
-                              LawHaveNoWord
-                                ? LawHaveNoWord
-                                : LawHaveWord
-                                ? LawHaveWord
-                                : nameLaw
-
-                              // info3[nameLaw] ? info3[nameLaw] : nameLaw
+                              // LawHaveNoWord
+                              //   ? LawHaveNoWord
+                              //   : LawHaveWord
+                              //   ? LawHaveWord
+                              //   : nameLaw
+nameLaw
                             }
                           </Text>
                         </TouchableOpacity>

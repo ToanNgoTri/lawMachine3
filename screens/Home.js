@@ -369,8 +369,8 @@ export default function Home({}) {
                   }}>
                   {'  '}Các thông tin, nội dung và dịch vụ mà Thư viện Luật cung cấp
                   chỉ mang tính chất tham khảo, với mục đích đem lại cho người
-                  sử dụng những thông tin tổng quát về các quy định của pháp Thư
-                  viện Luật qua từng thời kỳ. Thêm vào đó, việc thay đổi, bổ
+                  sử dụng những thông tin tổng quát về các quy định của pháp luật
+                   qua từng thời kỳ. Thêm vào đó, việc thay đổi, bổ
                   sung các quy định luật pháp là điều không tránh khỏi ở mỗi
                   giai đoạn phát triển, bởi vậy, mọi trường hợp người sử dụng
                   muốn vận dụng các quy định pháp luật vào từng trường hợp cụ
@@ -410,7 +410,8 @@ export default function Home({}) {
                     lineHeight:23
                   }}>
                   {'   '}Đây là ứng dụng tra cứu Luật của tập thể SViet xây dựng và phát triển. Ứng dụng không
-                  đại diện cho bất kỳ cơ quan nào thuộc Chính phủ. Cuối cùng xin chân thành cảm ơn tất cả các bạn và người dùng ứng dụng đã tin tưởng và ủng hộ chúng tôi!
+                  đại diện cho bất kỳ cơ quan nào thuộc Chính phủ. Cuối cùng, xin chân thành cảm ơn tất cả các bạn 
+                  và người dùng ứng dụng đã tin tưởng và ủng hộ chúng tôi !
                 </Text>
               </View>
 

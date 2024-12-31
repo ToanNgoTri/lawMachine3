@@ -191,7 +191,7 @@ const AppNavigators = () => {
         tabBarPressColor: '#FFCC66',
         animationEnabled: false,
         animation: 'shift',
-        lazy: true,
+        lazy: false,
         tabBarIndicatorStyle: {
           backgroundColor: '#336600',
           top: -2,

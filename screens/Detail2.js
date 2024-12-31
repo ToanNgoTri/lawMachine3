@@ -24,7 +24,7 @@ export function Detail2({}) {
 // console.log('info',info);
 
   const {loading3, info3} = useSelector(state => state['getlastedlaws']);
-  console.log('info3',info3);
+  // console.log('info3',info3);
   const [input, setInput] = useState(undefined);
   const [valueInput, setValueInput] = useState('');
 
@@ -567,6 +567,8 @@ return lawObject
             <></>
           ) : Object.keys(SearchResult).length || info3.length || info.length? (
             Object.keys(LawFilted || SearchResult).map((detailId, i) => {
+              console.log('detailId',detailId);
+              
               return (
                 <TouchableOpacity
                 key={i}
