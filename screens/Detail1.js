@@ -208,8 +208,8 @@ export function Detail1({}) {
           paddingBottom: 10,
           paddingTop: 10,
           justifyContent: 'center',
-          backgroundColor: '#F9CC76',
-          marginBottom: 1,
+          backgroundColor: i % 2 ? 'white' : '#DDDDDD', // #F9CC76
+          // marginBottom: 6,
         }}
         onPress={() => {
           navigation.push(`accessLaw`, {screen: key, input: input});
@@ -366,6 +366,7 @@ export function Detail1({}) {
                 value={input}
                 selectTextOnFocus={true}
                 placeholder="Nhập từ khóa..."
+                placeholderTextColor={'gray'}
                 onSubmitEditing={() => {
                   if(paper>2){
                     setPaper(0);
@@ -493,7 +494,7 @@ export function Detail1({}) {
           </View>
         </View>
       </View>
-      <View style={{marginTop: 0, marginBottom: 122}}>
+      <View style={{marginTop: 0, marginBottom: 103}}>
         {Array.isArray(SearchResult) ? null : !Object.keys(SearchResult)
             .length ? (
           <NoneOfResutl />

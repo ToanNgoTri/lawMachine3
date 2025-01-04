@@ -474,6 +474,7 @@ export function Detail2({}) {
                 value={input}
                 selectTextOnFocus={true}
                 placeholder="Nhập từ khóa..."
+                placeholderTextColor={'gray'}
                 onSubmitEditing={() => {
                   Keyboard.dismiss();
                   if (paper > 2) {
