@@ -8,31 +8,36 @@ import {
   Keyboard,
   ActivityIndicator,
   Animated,
+  FlatList,
+  Easing,
 } from 'react-native';
 // import {handle2, searchLaw} from '../redux/fetchData';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
-import {useNavigation,useScrollToTop} from '@react-navigation/native';
+import {useNavigation, useScrollToTop} from '@react-navigation/native';
 import React, {useEffect, useState, useRef, useContext} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
 import CheckBox from 'react-native-check-box';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export function Detail2({}) {
   const {loading2, info} = useSelector(state => state['searchLaw']);
-// console.log('info',info);
+  // console.log('info',info);
 
   const {loading3, info3} = useSelector(state => state['getlastedlaws']);
   // console.log('info3',info3);
-  const [input, setInput] = useState(undefined);
+
+  const [input, setInput] = useState(false);
   const [valueInput, setValueInput] = useState('');
 
   const [warning, setWanring] = useState(false);
-  // const inf = useContext(InfoDownloaded);
 
-  const [SearchResult, setSearchResult] = useState(info3?convertResult(info3.slice(0,10)):[]); // đây Object là các luật, điểm, khoản có kết quả tìm kiếm
-// console.log('info3',info3);
+  const [paper, setPaper] = useState(0);
+
+  const [SearchResult, setSearchResult] = useState(
+    info3 ? convertResult(info3.slice(0, 10)) : [],
+  ); // đây Object là các luật, điểm, khoản có kết quả tìm kiếm
+  // console.log('info3',info3);
 
   const [inputFilter, setInputFilter] = useState('');
   const [showFilter, setShowFilter] = useState(false);
@@ -48,11 +53,11 @@ export function Detail2({}) {
 
   const insets = useSafeAreaInsets(); // lất chiều cao để manu top iphone
 
-  const textInput = useRef(null)
+  const textInput = useRef(null);
 
+  const FlatListToScroll = useRef(null);
 
-  const ScrollViewToScroll = useRef(null);
-  useScrollToTop(ScrollViewToScroll)
+  useScrollToTop(FlatListToScroll);
 
   const dispatch = useDispatch();
 
@@ -68,26 +73,23 @@ export function Detail2({}) {
     outputRange: [0, 1],
   });
 
-  function LawFilterContent(array, obj) {
+  function LawFilterContent(choosenLaw, SearchResult) {
     let contentFilted = {};
-    Object.keys(obj).filter(key => {
-      if (array.includes(key)) {
-        contentFilted[key] = obj[key];
+    Object.keys(SearchResult).filter(key => {
+      if (choosenLaw.includes(key)) {
+        contentFilted[key] = SearchResult[key];
       }
     });
     setLawFilted(contentFilted);
+    // console.log('LawFilted',LawFilted);
   }
 
   useEffect(() => {
-    if(info3){
-      setSearchResult(convertResult(info3.slice(0,10)));
-      setLawFilted(convertResult(info3.slice(0,10)));
-      // console.log('convertResult(info3.slice(0,10))',(info3.slice(0,10)));
-      // console.log('SearchResult',SearchResult);
-      
+    if (info3) {
+      setSearchResult(convertResult(info3.slice(0, 10)));
+      setLawFilted(convertResult(info3.slice(0, 10)));
     }
-  }, [info3])
-
+  }, [info3]);
 
   function highlight(para, word, i2) {
     // console.log('para',para);
@@ -102,16 +104,17 @@ export function Detail2({}) {
             // .split(new RegExp('hội', 'igmu'))
             .reduce((prev, current, i) => {
               if (!i) {
-                return [<Text style={ i2.match(/aa/)?{...styles.chapterText}:{}
-                } key={`${i}xa`}
->{current}</Text>];
+                return [
+                  <Text
+                    style={i2.match(/aa/) ? {...styles.chapterText} : {}}
+                    key={`${i}xa`}>
+                    {current}
+                  </Text>,
+                ];
               }
 
-
               return prev.concat(
-                <React.Fragment
-                key={`${i}htth`}
-                >
+                <React.Fragment key={`${i}htth`}>
                   <Text
                     style={
                       // searchResultCount - inputRexgex.length + i - 1 <
@@ -120,41 +123,44 @@ export function Detail2({}) {
                       //   currentSearchPoint
                       //   ? styles.highlight1
                       //   : styles.highlight
-                      
-                        
-                      i2.match(/aa/)?{...styles.chapterText,backgroundColor:'yellow',}:{backgroundColor:'yellow'}
-                      
+
+                      i2.match(/aa/)
+                        ? {...styles.chapterText, backgroundColor: 'yellow'}
+                        : {backgroundColor: 'yellow'}
                     }
-                    key={`${i}gmi`}
-                    >
+                    key={`${i}gmi`}>
                     {inputRexgex[i - 1]}
                   </Text>
-              </React.Fragment> ,
+                </React.Fragment>,
                 <Text
-                key={`${i}vvv`}
+                  key={`${i}vvv`}
                   style={
-                    
-                    i2.match(/aa/)?{...styles.chapterText}:{}
-                      
-                  //   {
-                  //   position: 'relative',
-                  //   display: 'flex',
-                  //   margin: 0,
-                  //   lineHeight: 23,
-                    
-                  // }
+                    i2.match(/aa/) ? {...styles.chapterText} : {}
+
+                    //   {
+                    //   position: 'relative',
+                    //   display: 'flex',
+                    //   margin: 0,
+                    //   lineHeight: 23,
+
+                    // }
                   }>
                   {current}
                 </Text>,
               );
             }, []);
-          return <View ><Text style={{    textAlign:'justify'
-          }} >{'   '}{searchedPara}</Text></View>;
+          return (
+            <View>
+              <Text style={{textAlign: 'justify'}}>
+                {'   '}
+                {searchedPara}
+              </Text>
+            </View>
+          );
           // return <View >{searchedPara}</View>;
           // return <Text >{searchedPara}</Text>;
         } else {
-          
-          return para
+          return para;
         }
       } else {
         return para;
@@ -164,8 +170,7 @@ export function Detail2({}) {
     }
   }
 
-  
-  function convertResult(info){
+  function convertResult(info) {
     let lawObject = {};
     info.map((law, i) => {
       // lawObject[i] = {[law._id]:{'lawNameDisplay':law.info['lawNameDisplay'],'lawDescription':law.info['lawDescription'],'lawDaySign':law.info['lawDaySign']}}
@@ -175,12 +180,11 @@ export function Detail2({}) {
         lawDaySign: law.info['lawDaySign'],
       };
     });
-return lawObject
+    return lawObject;
   }
-  
+
   useEffect(() => {
     if (info) {
-
       setSearchResult(convertResult(info));
       setLawFilted(convertResult(info));
     }
@@ -237,8 +241,8 @@ return lawObject
 
   useEffect(() => {
     dispatch({type: 'getlastedlaws'});
-  }, [])
-  
+  }, []);
+
   function chooseDisplayKindLaw() {
     // 1 là luật, 2 là nd, 3 là TT
 
@@ -251,7 +255,6 @@ return lawObject
           (choosenKindLaw.includes(1) ? '|Nghị định' : '') +
           (choosenKindLaw.includes(2) ? '|Thông tư' : '');
         kindSample = kindSample.replace(/^\|/, '');
-        // console.log('kindSample',kindSample);
 
         if (
           SearchResult[law]['lawNameDisplay'].match(
@@ -291,7 +294,6 @@ return lawObject
     //     }
     //   })
     // }
-    // console.log('newResult',newResult)
   }
 
   const netInfo = useNetInfo();
@@ -301,7 +303,7 @@ return lawObject
     return (
       <View
         style={{height: 250, alignItems: 'center', justifyContent: 'flex-end'}}>
-        <Text style={{fontSize: 40, textAlign: 'center', color: 'black'}}>
+        <Text style={{fontSize: 40, textAlign: 'center', color: 'gray'}}>
           {' '}
           Không có kết quả nào{' '}
         </Text>
@@ -309,10 +311,62 @@ return lawObject
     );
   };
 
+  const Item = ({title}) => {
+    let detailId = title.item;
+    let i = title.index;
+
+    return (
+      <TouchableOpacity
+        key={i}
+        style={{
+          paddingBottom: 10,
+          paddingTop: 10,
+          justifyContent: 'center',
+          backgroundColor: i % 2 ? 'white' : '#DDDDDD', // #F9CC76
+          // marginBottom: 6,
+        }}
+        onPress={() => {
+          // navigation.navigate(`${detailInfo._id}`)
+          navigation.push(`accessLaw`, {screen: detailId});
+        }}>
+        <View style={styles.item}>
+          <Text style={styles.chapterText} key={`${i}a`}>
+            {highlight(
+              SearchResult[detailId]['lawNameDisplay'],
+              valueInput,
+              `${i}aa`,
+            )}
+          </Text>
+          <Text style={styles.descriptionText}>
+            {highlight(
+              SearchResult[detailId]['lawDescription'],
+              valueInput,
+              `${i}ab`,
+            )}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  function loadMoreData() {
+    if (paper < Math.ceil(Object.keys(SearchResult).length / 10)) {
+      setPaper(paper + 1);
+    }
+  }
+
+  function convertResultLoading(obj) {
+    const first10Entries = Object.entries(obj).slice(0, paper * 10);
+
+    // Chuyển lại array thành object
+    const first10Obj = Object.fromEntries(first10Entries);
+
+    return first10Obj;
+  }
+
   return (
     <>
-
-      {(loading2 || loading3|| !internetConnected) && (
+      {(loading2 || loading3 || !internetConnected) && (
         <View
           style={{
             position: 'absolute',
@@ -340,232 +394,247 @@ return lawObject
         </View>
       )}
 
-      <ScrollView
+      {/* <ScrollView
+        ref={ScrollViewToScroll}
+        keyboardShouldPersistTaps="handled"
+        style={{backgroundColor: '#EEEFE4'}}> */}
+      <View style={{backgroundColor: 'green', paddingTop: insets.top}}>
+        <Text style={styles.titleText}>{`Tìm kiếm văn bản`}</Text>
 
-      ref={ScrollViewToScroll}
-        keyboardShouldPersistTaps='handled'
-        style={{backgroundColor: '#EEEFE4',}}>
-        <View style={{backgroundColor: 'green',paddingTop: insets.top}}>
-          <Text style={styles.titleText}>{`Tìm kiếm văn bản`}</Text>
-
-          <View style={styles.inputContainer}>
-            <View style={{...styles.containerBtb, paddingTop: 5}}>
-              <TouchableOpacity
+        <View style={{...styles.inputContainer,height:52}}>
+          <View style={{...styles.containerBtb, paddingTop: 5}}>
+            <TouchableOpacity
+              style={{
+                ...styles.inputBtb,
+                backgroundColor: 'white',
+              }}
+              onPress={() => {
+                setShowFilter(true);
+                Keyboard.dismiss();
+                Animated.timing(animated, {
+                  toValue: !showFilter ? 100 : 0,
+                  // toValue:100,
+                  duration: 500,
+                  useNativeDriver: false,
+                }).start();
+              }}>
+              <Ionicons
+                name="funnel-outline"
+                style={{...styles.inputBtbText, color: 'black'}}></Ionicons>
+              <View
                 style={{
-                  ...styles.inputBtb,
-                  backgroundColor: 'white',
-                }}
-                onPress={() => {
-                  setShowFilter(true);
-                  Keyboard.dismiss();
-                  Animated.timing(animated, {
-                    toValue: !showFilter ? 100 : 0,
-                    // toValue:100,
-                    duration: 500,
-                    useNativeDriver: false,
-                  }).start();
+                  position: 'absolute',
+                  height: 25,
+                  width: 25,
+                  backgroundColor: 'red',
+                  borderRadius: 20,
+                  right: -10,
+                  bottom: -10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}>
-                <Ionicons
-                  name="funnel-outline"
-                  style={{...styles.inputBtbText, color: 'black'}}></Ionicons>
-                <View
+                <Text
                   style={{
-                    position: 'absolute',
-                    height: 25,
-                    width: 25,
-                    backgroundColor: 'red',
-                    borderRadius: 20,
-                    right: -10,
-                    bottom: -10,
+                    color: 'white',
+                    textAlign: 'center',
+                    fontSize: 10,
+                    fontWeight: 'bold',
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text
-                    style={{
-                      color: 'white',
-                      textAlign: 'center',
-                      fontSize: 10,
-                      fontWeight: 'bold',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    {choosenLaw.length}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'column',
-                width: '60%',
-                // backgroundColor:'red'
-              }}>
-              <View
-                style={{
-                  position: 'relative',
-                  flexDirection: 'row',
-                  backgroundColor: 'white',
-                  // height: 50,
-                  borderRadius: 15,
-                }}>
-                <TextInput
-                  ref={textInput}
-                  style={{...styles.inputArea}}
-                  onChangeText={text => {
-                    setInput(text);
-                  }}
-                  value={input}
-                  selectTextOnFocus={true}
-                  placeholder="Nhập từ khóa..."
-                  onSubmitEditing={() =>{
-                    Keyboard.dismiss();
-
-                    if(input.match(/^(\s)*$/)){
-                      setWanring(true)
-                    }else{
-                      dispatch({type: 'searchLaw', input: input});
-                      setValueInput(input)
-                    }
-                    setChoosenKindLaw([0, 1, 2]);
-                  }
-                    }></TextInput>
-                <TouchableOpacity
-                  onPress={() => {
-                    setInput('');
-                    textInput.current.focus();
-                  }}
-                  style={{
-                    width: '15%',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                    left: -3,
-                    // backgroundColor:'yellow'
-                  }}>
-                  {input && (
-                    <Ionicons
-                      name="close-circle-outline"
-                      style={{
-                        color: 'black',
-                        fontSize: 20,
-                        paddingRight: 8,
-                        // textAlign:'right'
-                      }}></Ionicons>
-                  )}
-                </TouchableOpacity>
+                  {choosenLaw.length}
+                </Text>
               </View>
-              <Text
-                style={{
-                  color: 'orange',
-                  fontSize: 14,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                }}>
-                {warning ? 'Vui lòng nhập từ khóa hợp lệ' : ' '}
-              </Text>
-            </View>
-            <View style={{...styles.containerBtb,paddingTop:-5}}>
-              <TouchableOpacity
-                style={{
-                  ...styles.inputBtb,
-                  borderRadius: 100,
-                  height: 40,
-                  borderWidth:2,
-                  borderColor:'#f67c1a',
-                  minWidth:40
-                }}
-                onPress={async () => {
-                  Keyboard.dismiss();
-
-                  if(input.match(/^(\s)*$/)){
-                    setWanring(true)
-                  }else{
-                    dispatch({type: 'searchLaw', input: input});
-                    setValueInput(input)
-
-                  }
-                  setChoosenKindLaw([0, 1, 2]);
-                }}>
-                <Ionicons
-                  name="search-outline"
-                  style={styles.inputBtbText}></Ionicons>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
+
           <View
             style={{
-              justifyContent: 'space-evenly',
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: '100%',
-              paddingBottom: 13,
+              flexDirection: 'column',
+              width: '60%',
+              // backgroundColor:'red'
             }}>
-            {['Luật/Bộ Luật', 'Nghị định', 'Thông tư'].map((option, i) => {
-              return (
-                <TouchableOpacity
+            <View
+              style={{
+                position: 'relative',
+                flexDirection: 'row',
+                backgroundColor: 'white',
+                // height: 50,
+                borderRadius: 15,
+                borderColor: warning ? '#FF4500' : 'none',
+                borderWidth: warning ? 1 : 0,
+                
+              }}>
+              <TextInput
+                ref={textInput}
+                style={{...styles.inputArea}}
+                onChangeText={text => {
+                  setInput(text);
+                }}
+                value={input}
+                selectTextOnFocus={true}
+                placeholder="Nhập từ khóa..."
+                onSubmitEditing={() => {
+                  Keyboard.dismiss();
+                  if (paper > 2) {
+                    setPaper(0);
+                  } else {
+                    setPaper(1);
+                  }
+                  if (FlatListToScroll.current) {
+                    FlatListToScroll.current.scrollToOffset({offset: 0});
+                  }
+                  if (!input || input.match(/^(\s)*$/)) {
+                    setWanring(true);
+                  } else {
+                    dispatch({type: 'searchLaw', input: input});
+                    setValueInput(input);
+                  }
+                  setChoosenKindLaw([0, 1, 2]);
+                }}></TextInput>
+              <TouchableOpacity
+                onPress={() => {
+                  setInput('');
+                  textInput.current.focus();
+                }}
+                style={{
+                  width: '15%',
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  left: -3,
+                  // backgroundColor:'yellow'
+                }}>
+                {input && (
+                  <Ionicons
+                    name="close-circle-outline"
+                    style={{
+                      color: 'black',
+                      fontSize: 20,
+                      paddingRight: 8,
+                      // textAlign:'right'
+                    }}></Ionicons>
+                )}
+              </TouchableOpacity>
+            </View>
+            <Text
+              style={{
+                color: '#FF4500',
+                fontSize: 12,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                lineHeight:14,
+              }}>
+              {warning ? 'Vui lòng nhập từ khóa hợp lệ' : ' '}
+            </Text>
+          </View>
+          <View style={{...styles.containerBtb, paddingTop: -5}}>
+            <TouchableOpacity
+              style={{
+                ...styles.inputBtb,
+                borderRadius: 100,
+                height: 40,
+                borderWidth: 2,
+                borderColor: '#f67c1a',
+                minWidth: 40,
+              }}
+              onPress={async () => {
+                Keyboard.dismiss();
+                if (paper > 2) {
+                  setPaper(0);
+                } else {
+                  setPaper(1);
+                }
+                if (FlatListToScroll.current) {
+                  FlatListToScroll.current.scrollToOffset({offset: 0});
+                }
+                if (!input || input.match(/^(\s)*$/)) {
+                  setWanring(true);
+                } else {
+                  dispatch({type: 'searchLaw', input: input});
+                  setValueInput(input);
+                }
+                setChoosenKindLaw([0, 1, 2]);
+              }}>
+              <Ionicons
+                name="search-outline"
+                style={styles.inputBtbText}></Ionicons>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            justifyContent: 'space-evenly',
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+            paddingBottom: 5,
+          }}>
+          {['Luật/Bộ Luật', 'Nghị định', 'Thông tư'].map((option, i) => {
+            return (
+              <TouchableOpacity
                 key={`${i}a`}
-                  onPress={() => {
+                onPress={() => {
+                  if (choosenKindLaw.includes(i)) {
+                    setChoosenKindLaw(choosenKindLaw.filter(a => a !== i));
+                  } else {
+                    setChoosenKindLaw([...choosenKindLaw, i]);
+                  }
+                }}
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  // width:75
+                }}>
+                <CheckBox
+                  onClick={() => {
                     if (choosenKindLaw.includes(i)) {
                       setChoosenKindLaw(choosenKindLaw.filter(a => a !== i));
                     } else {
                       setChoosenKindLaw([...choosenKindLaw, i]);
                     }
+
+                    // chooseDisplayKindLaw()
                   }}
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    // width:75
-                  }}>
-                  <CheckBox
-                    onClick={() => {
-                      if (choosenKindLaw.includes(i)) {
-                        setChoosenKindLaw(choosenKindLaw.filter(a => a !== i));
-                      } else {
-                        setChoosenKindLaw([...choosenKindLaw, i]);
-                      }
+                  isChecked={choosenKindLaw.includes(i)}
+                  style={{}}
+                  uncheckedCheckBoxColor={'white'}
+                  checkedCheckBoxColor={'white'}
+                />
+                <Text style={{fontSize: 13, color: 'white'}}>{option}</Text>
+              </TouchableOpacity>
+            );
+          })}
 
-                      // chooseDisplayKindLaw()
-                    }}
-                    isChecked={choosenKindLaw.includes(i)}
-                    style={{}}
-                    uncheckedCheckBoxColor={'white'}
-                    checkedCheckBoxColor={'white'}
-                  />
-                  <Text style={{fontSize: 13, color: 'white'}}>{option}</Text>
-                </TouchableOpacity>
-              );
-            })}
-
-            <TouchableOpacity
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 100,
+              height: 25,
+              backgroundColor: 'white',
+              width: 50,
+              padding: 0,
+            }}
+            onPress={async () => {
+              Keyboard.dismiss();
+              OrderDaySign();
+            }}>
+            <Ionicons
+              name="swap-vertical-outline"
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 100,
-                height: 25,
-                backgroundColor: 'white',
-                width: 50,
-                padding: 0,
-              }}
-              onPress={async () => {
-                Keyboard.dismiss();
-                OrderDaySign();
-              }}>
-              <Ionicons
-                name="swap-vertical-outline"
-                style={{
-                  ...styles.inputBtbText,
-                  fontSize: 19,
-                  color: 'black',
-                }}></Ionicons>
-            </TouchableOpacity>
-          </View>
+                ...styles.inputBtbText,
+                fontSize: 19,
+                color: 'black',
+              }}></Ionicons>
+          </TouchableOpacity>
         </View>
-        <View style={{marginTop: 1,flex:1}}>
-          { ( !info3.length && info == null )? (
+      </View>
+      <View style={{marginTop: 0, flex: 1}}>
+        {/* { ( !info3 && !info )? (
             <></>
-          ) : Object.keys(SearchResult).length || info3.length || info.length? (
+          ) : Object.keys(SearchResult).length || info3.length || info ? (
             Object.keys(LawFilted || SearchResult).map((detailId, i) => {
               console.log('detailId',detailId);
               
@@ -585,19 +654,9 @@ return lawObject
                   }}>
                   <View style={styles.item}>
                     <Text style={styles.chapterText} key={`${i}a`}>
-                      {/* {SearchResult[detailId]['lawNameDisplay']} */}
                       {highlight(SearchResult[detailId]['lawNameDisplay'],valueInput,`${i}aa`)}
                     </Text>
-                    {/* {!SearchResult[detailId]['lawNameDisplay'].match(
-                      /^(luật|bộ luật|Hiến)/gim,
-                    ) && (
-                      <Text style={styles.descriptionText}>
-                        {SearchResult[detailId] &&
-                          SearchResult[detailId]['lawDescription']}
-                      </Text>
-                    )} */}
                     <Text style={styles.descriptionText}>
-                      
                     {highlight(SearchResult[detailId]['lawDescription'],valueInput,`${i}ab`)}
                       </Text>
                   </View>
@@ -606,14 +665,76 @@ return lawObject
             })
           ) : (
             <NoneOfResutl />
-          )}
-        </View>
-      </ScrollView>
+          )} */}
+
+        {info != null && info.length == 0 ? (
+          <NoneOfResutl />
+        ) : Object.keys(SearchResult).length || info3.length || info ? (
+          // Object.keys(LawFilted || SearchResult).map((detailId, i) => {
+          //   // console.log('detailId',detailId);
+
+          //   return (
+          //     <TouchableOpacity
+          //       key={i}
+          //       style={{
+          //         paddingBottom: 10,
+          //         paddingTop: 10,
+          //         justifyContent: 'center',
+          //         backgroundColor: i % 2 ? 'white' : '#DDDDDD', // #F9CC76
+          //         // marginBottom: 6,
+          //       }}
+          //       onPress={() => {
+          //         // navigation.navigate(`${detailInfo._id}`)
+          //         navigation.push(`accessLaw`, {screen: detailId});
+          //       }}>
+          //       <View style={styles.item}>
+          //         <Text style={styles.chapterText} key={`${i}a`}>
+          //           {highlight(
+          //             SearchResult[detailId]['lawNameDisplay'],
+          //             valueInput,
+          //             `${i}aa`,
+          //           )}
+          //         </Text>
+          //         <Text style={styles.descriptionText}>
+          //           {highlight(
+          //             SearchResult[detailId]['lawDescription'],
+          //             valueInput,
+          //             `${i}ab`,
+          //           )}
+          //         </Text>
+          //       </View>
+          //     </TouchableOpacity>
+          //   );
+          // })
+
+          <FlatList
+            ref={FlatListToScroll}
+            data={Object.keys(convertResultLoading(LawFilted))}
+            renderItem={item => <Item title={item} />}
+            onEndReached={distanceFromEnd => {
+              if (!distanceFromEnd.distanceFromEnd) {
+                loadMoreData();
+              }
+            }}
+            onEndReachedThreshold={0}
+            ListFooterComponent={
+              paper < Math.ceil(Object.keys(LawFilted).length / 10) ? (
+                <ActivityIndicator color="black"/>
+              ) : (
+                <></>
+              )
+            }
+          />
+        ) : (
+          <></>
+        )}
+      </View>
+      {/* </ScrollView> */}
       {showFilter && (
         <>
           <Animated.View
             style={{
-              backgroundColor: 'rgb(245,245,247)',
+              backgroundColor: 'black',
               left: 0,
               right: 0,
               top: 0,
@@ -636,10 +757,10 @@ return lawObject
                   setShowFilter(false);
                   return () => {};
                 }, 500);
-
+                setChoosenLaw(Object.keys(LawFilted));
                 Animated.timing(animated, {
                   toValue: !showFilter ? 100 : 0,
-                  // toValue:100,
+                  easing: Easing.in,
                   duration: 300,
                   useNativeDriver: false,
                 }).start();
@@ -659,8 +780,6 @@ return lawObject
               borderRadius: 20,
               transform: [{scale: Scale}],
               overflow: 'hidden',
-              // borderWidth:1,
-              // borderColor:'brown',
               shadowColor: 'black',
               shadowOpacity: 1,
               shadowOffset: {
@@ -669,6 +788,10 @@ return lawObject
               },
               shadowRadius: 4,
               elevation: 20,
+              // borderWidth:1,
+              // borderColor:'#363636',
+              
+
             }}>
             <View
               style={{
@@ -740,7 +863,6 @@ return lawObject
                   setChoosenLaw(Object.keys(SearchResult));
                   setCheckedAllFilter(true);
                 }
-                // console.log(choosenLaw);
               }}>
               <CheckBox
                 onClick={() => {
@@ -766,9 +888,7 @@ return lawObject
               </Text>
             </TouchableOpacity>
 
-            <ScrollView 
-            keyboardShouldPersistTaps="handled"
-            >
+            <ScrollView keyboardShouldPersistTaps="handled">
               <View
                 style={{
                   paddingTop: 10,
@@ -821,8 +941,8 @@ return lawObject
                     ) {
                       return (
                         <TouchableOpacity
-                        key={`${i}b`}
-                        style={{
+                          key={`${i}b`}
+                          style={{
                             display: 'flex',
                             flexDirection: 'row',
                             paddingBottom: 10,
@@ -887,13 +1007,15 @@ return lawObject
                   setShowFilter(false);
                   return () => {};
                 }, 500);
-
+                setChoosenLaw(Object.keys(LawFilted));
                 Animated.timing(animated, {
                   toValue: !showFilter ? 100 : 0,
-                  // toValue:100,
+                  easing: Easing.in,
                   duration: 300,
                   useNativeDriver: false,
                 }).start();
+                setPaper(1);
+                FlatListToScroll.current.scrollToOffset({offset: 0});
               }}>
               <Text
                 style={{
@@ -916,11 +1038,11 @@ return lawObject
 
 const styles = StyleSheet.create({
   titleText: {
-    fontSize: 26,
+    fontSize: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
-    marginBottom: 15,
+    marginTop: 5,
+    marginBottom: 7,
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'white',
@@ -936,8 +1058,8 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingLeft: 12,
     borderRadius: 15,
-    paddingTop:10,
-    paddingBottom:10
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   containerBtb: {
     width: '15%',
@@ -993,13 +1115,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 16,
-    paddingBottom:5
+    paddingBottom: 5,
   },
   descriptionText: {
     textAlign: 'center',
     color: 'black',
     fontSize: 14,
-    textAlign:'justify'
+    textAlign: 'justify',
     // backgroundColor:'blue'
   },
   // chapterArrow: {

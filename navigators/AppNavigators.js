@@ -9,7 +9,7 @@ import Home from '../screens/Home';
 import {Detail1} from '../screens/Detail1';
 import {Detail2} from '../screens/Detail2';
 // import Detail4 from '../screens/Detail4';
-import Detail5 from '../screens/Detail5';
+import Detail5 from '../screens/Detail';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {ModalStatus} from '../App';
 import {
@@ -17,13 +17,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
-  Dimensions,
-  Button,
-  Image,
-  useWindowDimensions,
 } from 'react-native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
