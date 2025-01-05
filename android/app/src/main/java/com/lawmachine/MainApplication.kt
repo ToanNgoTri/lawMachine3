@@ -1,4 +1,4 @@
-package com.lawmachine3
+package com.lawmachine
 import com.oblador.vectoricons.VectorIconsPackage;
 import android.app.Application
 import com.facebook.react.PackageList

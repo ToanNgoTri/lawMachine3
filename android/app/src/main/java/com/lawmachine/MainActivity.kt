@@ -1,4 +1,4 @@
-package com.lawmachine3
+package com.lawmachine
 import android.os.Bundle;
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

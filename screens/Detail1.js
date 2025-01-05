@@ -811,7 +811,9 @@ ListFooterComponent={paper<Math.ceil(Object.keys(SearchResult).length/10)?<Activ
                   setLawFilted(false)
                 }
                 setPaper(0)
-                FlatListToScroll.current.scrollToOffset({ offset: 0})
+                if (FlatListToScroll.current) {
+                  FlatListToScroll.current.scrollToOffset({offset: 0});
+                }
               }}>
               <Text
                 style={{

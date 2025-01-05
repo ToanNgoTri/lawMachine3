@@ -1016,7 +1016,9 @@ export function Detail2({}) {
                   useNativeDriver: false,
                 }).start();
                 setPaper(1);
-                FlatListToScroll.current.scrollToOffset({offset: 0});
+                if (FlatListToScroll.current) {
+                  FlatListToScroll.current.scrollToOffset({offset: 0});
+                }
               }}>
               <Text
                 style={{

@@ -511,7 +511,7 @@ export default function Detail() {
 
   function setPositionYArtical({y, key3}) {
     if (
-      true
+      positionYArrArtical
       // tittleArray.length ||
       // tittleArray2.length ||
       // go ||
