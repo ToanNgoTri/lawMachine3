@@ -151,7 +151,7 @@ export function Detail2({}) {
             }, []);
           return (
             <View>
-              <Text style={{textAlign: 'justify'}}>
+              <Text style={ i2.match(/aa/) ?{textAlign: 'center'}: {textAlign: 'justify'}}>
                 {'   '}
                 {searchedPara}
               </Text>

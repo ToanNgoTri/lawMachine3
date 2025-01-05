@@ -220,7 +220,7 @@ export function Detail1({}) {
             {nameLaw}
           </Text>
           {!nameLaw.match(/^(luật|bộ luật|Hiến)/gim) && (
-            <Text style={styles.descriptionText}>{descriptionLaw}</Text>
+            <Text style={styles.descriptionText}>{'   '}{descriptionLaw}</Text>
           )}
         </View>
       </TouchableOpacity>
@@ -900,7 +900,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   descriptionText: {
-    textAlign: 'center',
+    textAlign: 'justify',
     color: 'black',
     fontSize: 14,
   },

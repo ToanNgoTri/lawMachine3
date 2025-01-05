@@ -5,11 +5,8 @@ import {
   View,
   TextInput,
   FlatList,
-  ActivityIndicator,
-  Image,
   Keyboard,
   Animated,
-  Dimensions,
   ScrollView,
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
@@ -287,7 +284,7 @@ export default function Home({}) {
         <>
           <Animated.View
             style={{
-              backgroundColor: 'rgb(245,245,247)',
+              backgroundColor: 'black',
               left: 0,
               right: 0,
               top: 0,
@@ -420,11 +417,12 @@ export default function Home({}) {
               style={{
                 backgroundColor: 'green',
               }}
+              
               onPress={async() => {
                 let timeOut = setTimeout(() => {
                   setShowPolicy(false);
                   return () => {};
-                }, 500);
+                }, 300);
                 const addContent = await FileSystem.writeFile(
                   Dirs.CacheDir + '/Appear.txt',
                   JSON.stringify('abc'),
