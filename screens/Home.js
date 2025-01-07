@@ -7,7 +7,7 @@ import {
   FlatList,
   Keyboard,
   Animated,
-  ScrollView,
+  ScrollView,PanResponder
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
 import dataOrg from '../data/data.json';
@@ -47,8 +47,8 @@ export default function Home({}) {
           backgroundColor:
             Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/gim)
               ? '#da251dff' 
-              : Info[item]['lawNameDisplay'].match(/^(Ngh)/gim)? '#00CC00' :
-              Info[item]['lawNameDisplay'].match(/^(Thô)/gim)? '#336600' :'#003300',
+              :'green' 
+              ,
           marginBottom: 6,
         }}
         onPress={() => navigation.navigate(`accessLaw`, {screen: item})}>
@@ -162,6 +162,9 @@ export default function Home({}) {
     const listener = navigation.addListener('focus', () => {
       async function getContentExist() {
         if (await FileSystem.exists(Dirs.CacheDir + '/Content.txt', 'utf8')) {
+          
+          setShowBackground(false)
+
           const FileInfoStringContent = await FileSystem.readFile(
             Dirs.CacheDir + '/Content.txt',
             'utf8',
@@ -177,12 +180,17 @@ export default function Home({}) {
             };
             // f = JSON.parse(FileInfoStringInfo)
           }
+        }else{
+        setShowBackground(true)
+
         }
       }
 
       getContentExist().then(cont => {
       if(!Object.keys(cont.content).length){
         setShowBackground(true)
+      }else{
+        setShowBackground(false)
       }
 
         if (cont) {
@@ -199,6 +207,7 @@ export default function Home({}) {
 
   const animated = useRef(new Animated.Value(0)).current;
 
+
   let Opacity = animated.interpolate({
     inputRange: [0, 100],
     outputRange: [0.5, 0],
@@ -208,6 +217,7 @@ export default function Home({}) {
     inputRange: [0, 100],
     outputRange: [1, 0],
   });
+
 
   return (
     <>
@@ -226,7 +236,7 @@ export default function Home({}) {
         }}>
         <View
           style={{
-            // backgroundColor: 'green',
+            backgroundColor: 'green',
             height: insets.top,
             width: '150%',
           }}></View>
@@ -275,8 +285,8 @@ export default function Home({}) {
           </TouchableOpacity>
         </View>
       </View>
-        {showBackground ?(      <View
-        style={{height: '80%', alignItems: 'center', justifyContent: 'center',width:'100%'}}>
+        {showBackground ? (      <View
+        style={{paddingBottom:100,height: '100%', alignItems: 'center', justifyContent: 'center',width:'100%',backgroundColor: '#EEEFE4'}}>
         <Text style={{fontSize: 40, textAlign: 'center', color: 'gray'}}>
           {' '}
           Chưa có văn bản tải xuống{' '}
@@ -488,10 +498,11 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontSize: 17,
+    marginBottom:5
   },
   itemDescription: {
     color: '#EEEEEE',
-    textAlign: 'center',
+    textAlign: 'justify',
     fontSize: 15,
   },
   inputSearchArea: {

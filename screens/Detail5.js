@@ -233,6 +233,8 @@ export default function Detail() {
   const ModalVisibleStatus = useContext(ModalStatus);
 
   const {loading} = useSelector(state => state['read']);
+  // console.log('loading',loading);
+  
   // const {info3} = useSelector(state => state['stackscreen']);
 
   async function callOneLaw() {
@@ -870,7 +872,7 @@ export default function Detail() {
 
   return (
     <>
-    {loading && (
+    {/* {loading && (
       <View
         style={{
           position: 'absolute',
@@ -895,7 +897,7 @@ export default function Detail() {
         </Text>
         <ActivityIndicator size="large" color="white"></ActivityIndicator>
       </View>
-    )}
+    )} */}
     <Modal
       presentationStyle="pageSheet"
       animationType="slide"
