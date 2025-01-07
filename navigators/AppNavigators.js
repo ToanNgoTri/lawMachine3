@@ -203,40 +203,6 @@ const AppNavigators = () => {
         },
       })}>
       <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          header: () => null,
-          tabBarIcon: ({focused, color, size}) => {
-            return (
-              <View style={{alignItems: 'center', top: -5, minWidth: 100,}}>
-                <Ionicons
-                  name="home-outline"
-                  style={
-                    focused ? styles.IconActive : styles.IconInActive
-                  }></Ionicons>
-                <Text
-                  style={{
-                    ...(focused ? styles.IconActive : styles.IconInActive),
-                    fontSize: 13,
-                    fontWeight: 'bold',
-                    
-                  }}>
-                  Đã tải xuống
-                </Text>
-              </View>
-            );
-          },
-
-          tabBarLabel: () => {
-            return null;
-          },
-        }}
-        listeners={{
-          tabPress: props => {},
-        }}
-      />
-      <Tab.Screen
         name="SearchLaw"
         component={Detail2}
         options={{
@@ -304,6 +270,40 @@ const AppNavigators = () => {
           tabPress: props => {
             // SearchScrollview.forSearch.current.scrollTo({y: 0});
           },
+        }}
+      />
+            <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          header: () => null,
+          tabBarIcon: ({focused, color, size}) => {
+            return (
+              <View style={{alignItems: 'center', top: -5, minWidth: 100,}}>
+                <Ionicons
+                  name="home-outline"
+                  style={
+                    focused ? styles.IconActive : styles.IconInActive
+                  }></Ionicons>
+                <Text
+                  style={{
+                    ...(focused ? styles.IconActive : styles.IconInActive),
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    
+                  }}>
+                  Đã tải xuống
+                </Text>
+              </View>
+            );
+          },
+
+          tabBarLabel: () => {
+            return null;
+          },
+        }}
+        listeners={{
+          tabPress: props => {},
         }}
       />
     </Tab.Navigator>
@@ -374,7 +374,6 @@ const StackNavigator = () => {
                 // }}
                 onPressIn={() => {
                   navigation.goBack();
-                  console.log(2);
                 }}
                 // onPressOut={() => {
                 //   navigation.goBack();

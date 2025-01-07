@@ -26,8 +26,9 @@ import {useSelector, useDispatch} from 'react-redux';
 // import {loader, noLoading} from '../redux/fetchData';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 // import {useAnimatedHeaderHeight} from '@react-navigation/native-stack';
-import {useHeaderHeight} from '@react-navigation/elements';
-let TopUnitCount; // là đơn vị lớn nhất vd là 'phần thứ' hoặc chương
+// import {useHeaderHeight} from '@react-navigation/elements';
+let TopUnitCount; // là đơn vị lớn nhất vd là 'phần thứ' hoặc chươn
+
 let articleCount = 0;
 let sumChapterArray = []; // array mà mỗi phần tử là 'phần thứ...' có tổng bn chương
 sumChapterArray[0] = 0;
@@ -38,7 +39,7 @@ let eachSectionWithChapter = [];
 
 export default function Detail() {
   // const headerHeight = useAnimatedHeaderHeight();
-  const headerHeight = useHeaderHeight();
+  // const headerHeight = useHeaderHeight();
   // console.log('headerHeight', headerHeight);
 
   // const [tittle, setTittle] = useState();     // để collapse chương nếu không có mục 'phần thứ...' hoặc mục' phần thứ...' nếu có
@@ -164,8 +165,8 @@ export default function Detail() {
   const list = useRef(null);
   const textInputFind = useRef(null);
   const textInputArticle = useRef(null);
-  const PositionYArrArticalForDev = useRef(null);
-  PositionYArrArticalForDev.current = [];
+  // const PositionYArrArticalForDev = useRef(null);
+  // PositionYArrArticalForDev.current = [];
   // const [input, setInput] = useState('');
   const [valueInput, setValueInput] = useState('');
   const [find, setFind] = useState();
@@ -293,18 +294,20 @@ export default function Detail() {
     getContentExist().then(cont => {
       if (
         cont &&
-        Object.keys({...dataOrg['info'], ...cont.info}).includes(
+        Object.keys({...cont.info}).includes(
           route.params.screen,
         )
       ) {
-        setInfo({...dataOrg['info'], ...cont.info}[route.params.screen]);
+        setInfo({...cont.info}[route.params.screen]);
         setContent(
-          {...dataOrg['content'], ...cont.content}[route.params.screen],
+          { ...cont.content}[route.params.screen],
         );
-      } else if (Object.keys(dataOrg['info']).includes(route.params.screen)) {
-        setInfo(dataOrg['info'][route.params.screen]);
-        setContent(dataOrg['content'][route.params.screen]);
-      } else {
+      } 
+      // else if (Object.keys(dataOrg['info']).includes(route.params.screen)) {
+      //   setInfo(dataOrg['info'][route.params.screen]);
+      //   setContent(dataOrg['content'][route.params.screen]);
+      // } 
+      else {
         setExists(true);
         dispatch({type: 'read', lawName: route.params.screen});
       }
@@ -491,7 +494,7 @@ export default function Detail() {
             }, []);
           return (
             <View>
-              <Text>{searchedPara}</Text>
+              <Text style={{textAlign:'justify'}}>{searchedPara}</Text>
             </View>
           );
           // return <View >{searchedPara}</View>;
@@ -509,60 +512,68 @@ export default function Detail() {
 
   let positionYArrArticalDemo = positionYArrArtical;
 
+// console.log('articleCount',articleCount);
+
   function setPositionYArtical({y, key3}) {
+    // console.log('positionYArrArtical',positionYArrArtical);
     if (
-      positionYArrArtical
-      // tittleArray.length ||
-      // tittleArray2.length ||
-      // go ||
-      // tittleArray[0] ||
-      // tittleArray2[0]
+      positionYArrArtical && positionYArrArticalDemo
     ) {
       var contains = positionYArrArtical.some((elem, i) => {
-        return key3 == Object.keys(elem);
+        // console.log('elem',elem);
+        // console.log('key3',key3);
+        // console.log('key3 == Object.keys(elem)[0];',key3 == Object.keys(elem)[0]);
+        
+        return key3 == Object.keys(elem)[0];
       });
 
-      if (!showArticle) {
+      // if (!showArticle) {
         // nếu showArticle đang đóng
+// console.log('contains',contains);
         if (contains) {
-          // nếu positionYArrArtical chưa có "điều" gì đó
-          articleCount++;
+          // // nếu positionYArrArtical chưa có "điều" gì đó
+          // articleCount++;
+          // console.log('contains',contains);
+          
+          // for (let g = 0; g <= positionYArrArtical.length; g++) {
+          //   if (positionYArrArticalDemo[g][key3]) {
+          //     positionYArrArticalDemo[g][key3] = y + currentY;
+          //     break;
+          //   }
+          // }
 
-          for (let g = 0; g <= positionYArrArtical.length; g++) {
-            if (positionYArrArticalDemo[g][key3]) {
-              positionYArrArticalDemo[g][key3] = y + currentY;
-              break;
-            }
-          }
+          // if (articleCount >= positionYArrArtical.length) {
+          //   // nếu positionYArrArtical đã đủ số lượng điều
+          //   setPositionYArrArtical(positionYArrArticalDemo);
+          //   // PositionYArrArticalForDev.current = [];
 
-          if (articleCount >= positionYArrArtical.length) {
-            // nếu positionYArrArtical đã đủ số lượng điều
-            setPositionYArrArtical(positionYArrArticalDemo);
-            // setPositionYArrArtical(q.current);
-            PositionYArrArticalForDev.current = [];
-
-            articleCount = 0;
-          }
+          //   articleCount = 0;
+            
+          // }
+          // console.log(1);
         } else {
           // nếu positionYArrArtical chưa đủ số lượng điều
+          
           positionYArrArtical.push({[key3]: y + currentY});
         }
-      } else {
-        // nếu showArticle đang mở
-        articleCount++;
+        
+      // } 
+      // else {
+      //   // nếu showArticle đang mở
+      //   articleCount++;
 
-        // positionYArrArtical.map((elem, i) => {
-        PositionYArrArticalForDev.current[articleCount - 1] = {
-          [key3]: y + currentY,
-        };
+      //   // positionYArrArtical.map((elem, i) => {
+      //   PositionYArrArticalForDev.current[articleCount - 1] = {
+      //     [key3]: y + currentY,
+      //   };
 
-        // });
-        if (articleCount >= positionYArrArtical.length) {
-          setPositionYArrArtical(PositionYArrArticalForDev.current);
-          articleCount = 0;
-          PositionYArrArticalForDev.current = [];
-        }
-      }
+      //   // });
+      //   if (articleCount >= positionYArrArtical.length) {
+      //     // setPositionYArrArtical(PositionYArrArticalForDev.current);
+      //     articleCount = 0;
+      //     PositionYArrArticalForDev.current = [];
+      //   }
+      // }
     }
   }
 
@@ -686,6 +697,7 @@ export default function Detail() {
           return (
             <View key={`${i2}a1`}>
               <View
+              
                 onLayout={event => {
                   event.target.measure((x, y, width, height, pageX, pageY) => {
                     setPositionYArtical({
@@ -903,16 +915,7 @@ export default function Detail() {
               justifyContent: 'space-between',
               alignItems: 'center',
               height: 60,
-              // borderBottomWidth:3,
               borderColor: '#2F4F4F',
-              // shadowColor: 'gray',
-              // shadowOpacity: 1,
-              // shadowOffset: {
-              //   width: 2,
-              //   height: 2,
-              // },
-              // shadowRadius: 4,
-              // elevation: 1,
             }}>
             <TouchableOpacity
               onPress={() => {
@@ -946,7 +949,9 @@ export default function Detail() {
                 flex: 1,
                 justifyContent: 'flex-end',
               }}>
-              {exists && !dataOrg['info'][route.params.screen] && (
+              {/* {exists && !dataOrg['info'][route.params.screen] && ( */}
+              {exists  && (
+
                 <TouchableOpacity
                   onPress={() => {
                     StoreInternal();
@@ -972,7 +977,7 @@ export default function Detail() {
                     }}></Ionicons>
                 </TouchableOpacity>
               )}
-              {!exists && !dataOrg['info'][route.params.screen] && (
+              {!exists && (
                 <TouchableOpacity
                   onPress={async () => {
                     Alert.alert(

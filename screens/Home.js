@@ -27,6 +27,8 @@ export default function Home({}) {
   const [inputSearchLaw, setInputSearchLaw] = useState('');
   const [searchLawResult, setSearchLawResult] = useState([]);
   const [showPolicy, setShowPolicy] = useState(false);
+  const [showBackground, setShowBackground] = useState(false)
+  
 
   const insets = useSafeAreaInsets(); // lất chiều cao để menu top iphone
 
@@ -34,6 +36,7 @@ export default function Home({}) {
   useScrollToTop(ScrollViewToScroll);
 
   const Render = ({item, i}) => {
+
     return (
       <TouchableOpacity
         key={i}
@@ -43,8 +46,9 @@ export default function Home({}) {
           justifyContent: 'center',
           backgroundColor:
             Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/gim)
-              ? '#003300'
-              : 'green',
+              ? '#da251dff' 
+              : Info[item]['lawNameDisplay'].match(/^(Ngh)/gim)? '#00CC00' :
+              Info[item]['lawNameDisplay'].match(/^(Thô)/gim)? '#336600' :'#003300',
           marginBottom: 6,
         }}
         onPress={() => navigation.navigate(`accessLaw`, {screen: item})}>
@@ -177,12 +181,14 @@ export default function Home({}) {
       }
 
       getContentExist().then(cont => {
+      if(!Object.keys(cont.content).length){
+        setShowBackground(true)
+      }
+
         if (cont) {
-          // setContent(({...dataOrg['LawContent'],...cont.content}));
-          setInfo({...dataOrg['info'], ...cont.info});
+          setInfo({...cont.info});
         } else {
-          // setContent(dataOrg['LawContent'])
-          setInfo(dataOrg['info']);
+          setInfo({});
         }
       });
     });
@@ -269,16 +275,28 @@ export default function Home({}) {
           </TouchableOpacity>
         </View>
       </View>
+        {showBackground ?(      <View
+        style={{height: '80%', alignItems: 'center', justifyContent: 'center',width:'100%'}}>
+        <Text style={{fontSize: 40, textAlign: 'center', color: 'gray'}}>
+          {' '}
+          Chưa có văn bản tải xuống{' '}
+        </Text>
+      </View>
+)
 
-      <FlatList
-        ref={ScrollViewToScroll}
-        style={{backgroundColor: '#EEEFE4'}}
-        keyboardShouldPersistTaps="handled"
-        data={Info && (searchLawResult || Object.keys(Info))}
-        renderItem={Render}
-        //   ListFooterComponent={(totalPaper > currentPaper) && renderLoader} //(totalPaper > currentPaper) &&
-        //   onEndReached={ loadMoreItem}
-      ></FlatList>
+:(
+  <FlatList
+  ref={ScrollViewToScroll}
+  style={{backgroundColor: '#EEEFE4'}}
+  keyboardShouldPersistTaps="handled"
+  data={Info && (searchLawResult || Object.keys(Info))}
+  renderItem={Render}
+  //   ListFooterComponent={(totalPaper > currentPaper) && renderLoader} //(totalPaper > currentPaper) &&
+  //   onEndReached={ loadMoreItem}
+></FlatList>
+
+)
+        }
 
       {showPolicy && (
         <>
