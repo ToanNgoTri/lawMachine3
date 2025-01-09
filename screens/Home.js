@@ -7,7 +7,7 @@ import {
   FlatList,
   Keyboard,
   Animated,
-  ScrollView,PanResponder
+  ScrollView
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
 import dataOrg from '../data/data.json';
@@ -16,6 +16,11 @@ import {Dirs, FileSystem} from 'react-native-file-access';
 import {useScrollToTop} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+// import { NestableScrollContainer, NestableDraggableFlatList } from "react-native-draggable-flatlist"
+import DraggableFlatList, {
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
+
 
 export default function Home({}) {
   const navigation = useNavigation();
@@ -35,10 +40,13 @@ export default function Home({}) {
   const ScrollViewToScroll = useRef(null);
   useScrollToTop(ScrollViewToScroll);
 
-  const Render = ({item, i}) => {
+  const Render = ({item, i,drag, isActive}) => {
 
     return (
+      <ScaleDecorator>
       <TouchableOpacity
+      onLongPress={drag}
+      disabled={isActive}
         key={i}
         style={{
           paddingBottom: 20,
@@ -71,6 +79,7 @@ export default function Home({}) {
             )}
         </View>
       </TouchableOpacity>
+      </ScaleDecorator>
     );
   };
 
@@ -203,6 +212,8 @@ export default function Home({}) {
 
     getPolicyAppear()
     .then((status)=> setShowPolicy(status))
+
+
   }, []);
 
   const animated = useRef(new Animated.Value(0)).current;
@@ -218,7 +229,16 @@ export default function Home({}) {
     outputRange: [1, 0],
   });
 
+  const [data, setData] = useState([]);
 
+  console.log('data',data);
+  console.log('Info',Info);
+  
+  useEffect(() => {
+setData(Object.keys(Info))  
+  }, [Info])
+  
+  
   return (
     <>
       <View
@@ -295,15 +315,31 @@ export default function Home({}) {
 )
 
 :(
-  <FlatList
-  ref={ScrollViewToScroll}
-  style={{backgroundColor: '#EEEFE4'}}
-  keyboardShouldPersistTaps="handled"
-  data={Info && (searchLawResult || Object.keys(Info))}
+//   <NestableScrollContainer>
+//   <NestableDraggableFlatList
+//   // ref={ScrollViewToScroll}
+//   style={{backgroundColor: '#EEEFE4'}}
+//   keyboardShouldPersistTaps="handled"
+//   // data={Info && (searchLawResult || Object.keys(Info))}
+//   data={data}
+//   renderItem={Render}
+//   onDragEnd={({ data }) => setData(data)}
+// keyExtractor={(item) => item.key}  //   onEndReached={ loadMoreItem}
+// />
+//   </NestableScrollContainer>
+
+
+  <DraggableFlatList
+  // style={{backgroundColor: '#EEEFE4'}}
+  // keyboardShouldPersistTaps="handled"
+  // data={Info && (searchLawResult || Object.keys(Info))}
+  data={data}
   renderItem={Render}
+  keyExtractor={(item) => item.key}
+  onDragEnd={({ data }) => setData(data)}
   //   ListFooterComponent={(totalPaper > currentPaper) && renderLoader} //(totalPaper > currentPaper) &&
   //   onEndReached={ loadMoreItem}
-></FlatList>
+/>
 
 )
         }
