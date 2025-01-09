@@ -96,7 +96,9 @@ export default function Detail() {
         'utf8',
       );
       let infoObject = JSON.parse(FileInfoStringInfo);
-      infoObject[route.params.screen] = Info;
+      console.log(infoObject,'infoObject');
+      
+      infoObject[infoObject.length] = {[route.params.screen]:Info};
 
       const addInfo = await FileSystem.writeFile(
         Dirs.CacheDir + '/Info.txt',
@@ -112,7 +114,7 @@ export default function Detail() {
 
       const addInfo = await FileSystem.writeFile(
         Dirs.CacheDir + '/Info.txt',
-        JSON.stringify({[route.params.screen]: Info}),
+        JSON.stringify([{[route.params.screen]: Info}]),
         'utf8',
       );
     }

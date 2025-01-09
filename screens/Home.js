@@ -25,7 +25,6 @@ import DraggableFlatList, {
 export default function Home({}) {
   const navigation = useNavigation();
 
-  // const [Content, setContent] = useState('');
 
   const [Info, setInfo] = useState(false);
 
@@ -43,9 +42,9 @@ export default function Home({}) {
   const Render = ({item, i,drag, isActive}) => {
 
     return (
-      <ScaleDecorator>
+      // <ScaleDecorator>
       <TouchableOpacity
-      onLongPress={drag}
+      onLongPress={inputSearchLaw? null:drag}
       disabled={isActive}
         key={i}
         style={{
@@ -53,7 +52,7 @@ export default function Home({}) {
           paddingTop: 20,
           justifyContent: 'center',
           backgroundColor:
-            Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/gim)
+            Object.values(item)[0] && Object.values(item)[0]['lawNameDisplay'].match(/^(Hiến)/gim)
               ? '#da251dff' 
               :'green' 
               ,
@@ -65,70 +64,143 @@ export default function Home({}) {
             style={{
               ...styles.itemDisplay,
               color:
-                Info[item] && Info[item]['lawNameDisplay'].match(/^(Hiến)/gim)
+                Object.values(item)[0] && Object.values(item)[0]['lawNameDisplay'].match(/^(Hiến)/gim)
                   ? 'yellow'
                   : 'white',
             }}>
-            {Info[item] && Info[item]['lawNameDisplay']}
+            {/* {Info[item] && Info[item]['lawNameDisplay']} */}
+            {Object.values(item)[0]['lawNameDisplay']}
           </Text>
-          {Info[item] &&
-            !Info[item]['lawNameDisplay'].match(/^(luật|bộ luật|hiến)/gim) && (
+          {Object.values(item)[0] &&
+            !Object.values(item)[0]['lawNameDisplay'].match(/^(luật|bộ luật|hiến)/gim) && (
               <Text style={{...styles.itemDescription}}>
-                {Info[item] && Info[item]['lawDescription']}
+                {/* {Info[item] && Info[item]['lawDescription']} */}
+                {Object.values(item)[0] && Object.values(item)[0]['lawDescription'] }
+
               </Text>
             )}
         </View>
       </TouchableOpacity>
-      </ScaleDecorator>
+      // </ScaleDecorator>
     );
   };
 
   useEffect(() => {
-    setSearchLawResult(
-      Info &&
-        Object.keys(Info).filter(item => {
-          if (
-            inputSearchLaw.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\s?)/gim)
-          ) {
-            let inputSearchLawReg = inputSearchLaw;
-            if (inputSearchLaw.match(/\(/gim)) {
-              inputSearchLawReg = inputSearchLaw.replace(/\(/gim, '\\(');
-            }
+    // setSearchLawResult(
+    //   Info &&
+    //     Object.keys(Info).filter(item => {
+    //       if (
+    //         inputSearchLaw.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\s?)/gim)
+    //       ) {
+    //         let inputSearchLawReg = inputSearchLaw;
+    //         if (inputSearchLaw.match(/\(/gim)) {
+    //           inputSearchLawReg = inputSearchLaw.replace(/\(/gim, '\\(');
+    //         }
 
-            if (inputSearchLaw.match(/\)/gim)) {
-              inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
-            }
-            if (inputSearchLaw.match(/\//gim)) {
-              inputSearchLawReg = inputSearchLawReg.replace(/\//gim, '.');
-            }
-            if (inputSearchLaw.match(/\\/gim)) {
-              inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
-            }
-            if (inputSearchLaw.match(/\./gim)) {
-              inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
-            }
-            if (inputSearchLaw.match(/\+/gim)) {
-              inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
-            }
-            if (inputSearchLaw.match(/\?/gim)) {
-              inputSearchLawReg = inputSearchLawReg.replace(/\?/gim, '\\?');
-            }
+    //         if (inputSearchLaw.match(/\)/gim)) {
+    //           inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
+    //         }
+    //         if (inputSearchLaw.match(/\//gim)) {
+    //           inputSearchLawReg = inputSearchLawReg.replace(/\//gim, '.');
+    //         }
+    //         if (inputSearchLaw.match(/\\/gim)) {
+    //           inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
+    //         }
+    //         if (inputSearchLaw.match(/\./gim)) {
+    //           inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
+    //         }
+    //         if (inputSearchLaw.match(/\+/gim)) {
+    //           inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
+    //         }
+    //         if (inputSearchLaw.match(/\?/gim)) {
+    //           inputSearchLawReg = inputSearchLawReg.replace(/\?/gim, '\\?');
+    //         }
 
-            return (
-              Info[item]['lawNameDisplay'].match(
-                new RegExp(inputSearchLawReg, 'igm'),
-              ) ||
-              Info[item]['lawDescription'].match(
-                new RegExp(inputSearchLawReg, 'igm'),
-              ) ||
-              Info[item]['lawNumber'].match(
-                new RegExp(inputSearchLawReg, 'igm'),
-              )
-            );
-          }
-        }),
-    );
+    //         return (
+    //           Info[item]['lawNameDisplay'].match(
+    //             new RegExp(inputSearchLawReg, 'igm'),
+    //           ) ||
+    //           Info[item]['lawDescription'].match(
+    //             new RegExp(inputSearchLawReg, 'igm'),
+    //           ) ||
+    //           Info[item]['lawNumber'].match(
+    //             new RegExp(inputSearchLawReg, 'igm'),
+    //           )
+    //         );
+    //       }
+    //     }),
+    // );
+  
+    if(inputSearchLaw){
+      // setData(
+      //   Info &&
+      //     Object.keys(Info).filter(item => {
+      //       if (
+      //         inputSearchLaw.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\s?)/gim)
+      //       ) {
+      //         let inputSearchLawReg = inputSearchLaw;
+      //         if (inputSearchLaw.match(/\(/gim)) {
+      //           inputSearchLawReg = inputSearchLaw.replace(/\(/gim, '\\(');
+      //         }
+  
+      //         if (inputSearchLaw.match(/\)/gim)) {
+      //           inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
+      //         }
+      //         if (inputSearchLaw.match(/\//gim)) {
+      //           inputSearchLawReg = inputSearchLawReg.replace(/\//gim, '.');
+      //         }
+      //         if (inputSearchLaw.match(/\\/gim)) {
+      //           inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
+      //         }
+      //         if (inputSearchLaw.match(/\./gim)) {
+      //           inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
+      //         }
+      //         if (inputSearchLaw.match(/\+/gim)) {
+      //           inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
+      //         }
+      //         if (inputSearchLaw.match(/\?/gim)) {
+      //           inputSearchLawReg = inputSearchLawReg.replace(/\?/gim, '\\?');
+      //         }
+  
+      //         return (
+      //           Info[item]['lawNameDisplay'].match(
+      //             new RegExp(inputSearchLawReg, 'igm'),
+      //           ) ||
+      //           Info[item]['lawDescription'].match(
+      //             new RegExp(inputSearchLawReg, 'igm'),
+      //           ) ||
+      //           Info[item]['lawNumber'].match(
+      //             new RegExp(inputSearchLawReg, 'igm'),
+      //           )
+      //         );
+      //       }
+      //     })
+      // );
+      }
+
+      // DeleteInternal()
+
+  
   }, [inputSearchLaw]);
+
+  async function DeleteInternal() {
+    console.log('delete');
+    
+
+    const addContent = await FileSystem.unlink(
+      Dirs.CacheDir + '/Content.txt'
+    );
+
+
+    const addInfo = await FileSystem.unlink(
+      Dirs.CacheDir + '/Info.txt'
+    );
+  }
+
+
+
+// console.log('searchLawResult',searchLawResult);
+
 
   // const UserSchema = {
   //   name:'task',
@@ -165,35 +237,39 @@ export default function Home({}) {
     }
   }
 
+  async function getContentExist() {
+    if (await FileSystem.exists(Dirs.CacheDir + '/Content.txt', 'utf8')) {
+      
+      setShowBackground(false)
+
+      const FileInfoStringContent = await FileSystem.readFile(
+        Dirs.CacheDir + '/Content.txt',
+        'utf8',
+      );
+      const FileInfoStringInfo = await FileSystem.readFile(
+        Dirs.CacheDir + '/Info.txt',
+        'utf8',
+      );
+      console.log('FileInfoStringInfo',FileInfoStringInfo);
+
+      if (FileInfoStringContent) {
+        return {
+          content: JSON.parse(FileInfoStringContent),
+          info: JSON.parse(FileInfoStringInfo),
+        };
+        // f = JSON.parse(FileInfoStringInfo)
+      }
+    }else{
+    setShowBackground(true)
+
+    }
+  }
 
 
   useEffect(() => {
     const listener = navigation.addListener('focus', () => {
-      async function getContentExist() {
-        if (await FileSystem.exists(Dirs.CacheDir + '/Content.txt', 'utf8')) {
-          
-          setShowBackground(false)
 
-          const FileInfoStringContent = await FileSystem.readFile(
-            Dirs.CacheDir + '/Content.txt',
-            'utf8',
-          );
-          const FileInfoStringInfo = await FileSystem.readFile(
-            Dirs.CacheDir + '/Info.txt',
-            'utf8',
-          );
-          if (FileInfoStringContent) {
-            return {
-              content: JSON.parse(FileInfoStringContent),
-              info: JSON.parse(FileInfoStringInfo),
-            };
-            // f = JSON.parse(FileInfoStringInfo)
-          }
-        }else{
-        setShowBackground(true)
-
-        }
-      }
+      setInputSearchLaw('')
 
       getContentExist().then(cont => {
       if(!Object.keys(cont.content).length){
@@ -203,9 +279,16 @@ export default function Home({}) {
       }
 
         if (cont) {
-          setInfo({...cont.info});
+          // setInfo({...cont.info});
+          let c = []
+          cont.info.map( (item)=>{
+            c.push(Object.keys(item)[0])
+          })
+          setData(cont.info)  
+
         } else {
-          setInfo({});
+          // setInfo({});
+          setData([]);
         }
       });
     });
@@ -231,12 +314,18 @@ export default function Home({}) {
 
   const [data, setData] = useState([]);
 
-  console.log('data',data);
-  console.log('Info',Info);
+function sortedData(){
+
+
+  getContentExist().then(cont => {
+
+console.log(cont);
+
+    
+  })
+}  
   
-  useEffect(() => {
-setData(Object.keys(Info))  
-  }, [Info])
+  console.log('data',data);
   
   
   return (
@@ -289,6 +378,7 @@ setData(Object.keys(Info))
               width: '10%',
               display: 'flex',
               // backgroundColor:'red',
+              justifyContent:'center'
             }}>
             {inputSearchLaw && (
               <Ionicons
@@ -298,7 +388,7 @@ setData(Object.keys(Info))
                   fontSize: 25,
                   justifyContent: 'center',
                   textAlign: 'right',
-                  // backgroundColor:'black';
+                  // backgroundColor:'black',
                   paddingRight: 10,
                 }}></Ionicons>
             )}
@@ -324,7 +414,7 @@ setData(Object.keys(Info))
 //   data={data}
 //   renderItem={Render}
 //   onDragEnd={({ data }) => setData(data)}
-// keyExtractor={(item) => item.key}  //   onEndReached={ loadMoreItem}
+// keyExtractor={(item) => item}  
 // />
 //   </NestableScrollContainer>
 
@@ -335,11 +425,17 @@ setData(Object.keys(Info))
   // data={Info && (searchLawResult || Object.keys(Info))}
   data={data}
   renderItem={Render}
-  keyExtractor={(item) => item.key}
-  onDragEnd={({ data }) => setData(data)}
-  //   ListFooterComponent={(totalPaper > currentPaper) && renderLoader} //(totalPaper > currentPaper) &&
-  //   onEndReached={ loadMoreItem}
+  keyExtractor={(item) => Object.keys(item)}
+  onDragEnd={({ data }) => {setData(data),sortedData(data)}}
 />
+
+// <FlatList
+// ref={ScrollViewToScroll}
+// style={{backgroundColor: '#EEEFE4'}}
+// keyboardShouldPersistTaps="handled"
+// data={Info && (searchLawResult || Object.keys(Info))}
+// renderItem={Render}
+// ></FlatList> 
 
 )
         }
