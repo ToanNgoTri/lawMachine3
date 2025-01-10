@@ -17,7 +17,7 @@ import {
 import {Dirs, FileSystem} from 'react-native-file-access';
 import React, {useState, useEffect, useRef, useContext} from 'react';
 import {useRoute, useNavigation} from '@react-navigation/native';
-import dataOrg from '../data/data.json';
+// import dataOrg from '../data/data.json';
 // import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ModalStatus} from '../App';
@@ -67,9 +67,9 @@ export default function Detail() {
 
   async function StoreInternal() {
     async function k() {
-      if (await FileSystem.exists(Dirs.CacheDir + '/Info.txt', 'utf8')) {
+      if (await FileSystem.exists(Dirs.CacheDir + '/downloaded.txt', 'utf8')) {
         const FileInfoString = await FileSystem.readFile(
-          Dirs.CacheDir + '/Info.txt',
+          Dirs.CacheDir + '/downloaded.txt',
           'utf8',
         );
         return JSON.parse(FileInfoString);
@@ -78,84 +78,88 @@ export default function Detail() {
 
     let m = await k();
     if (m) {
-      const FileInfoStringContent = await FileSystem.readFile(
-        Dirs.CacheDir + '/Content.txt',
+      const FileDownloaded = await FileSystem.readFile(
+        Dirs.CacheDir + '/downloaded.txt',
         'utf8',
       );
-      let contentObject = JSON.parse(FileInfoStringContent);
-      contentObject[route.params.screen] = Content;
+      let contentObject = JSON.parse(FileDownloaded);
+      contentObject[route.params.screen] = {'Content':Content,'Info':Info};
+      // contentObject[route.params.screen] = {'Info':Info};
+
 
       const addContent = await FileSystem.writeFile(
-        Dirs.CacheDir + '/Content.txt',
+        Dirs.CacheDir + '/downloaded.txt',
         JSON.stringify(contentObject),
         'utf8',
       );
 
-      const FileInfoStringInfo = await FileSystem.readFile(
-        Dirs.CacheDir + '/Info.txt',
+      const FileOrder = await FileSystem.readFile(
+        Dirs.CacheDir + '/order.txt',
         'utf8',
       );
-      let infoObject = JSON.parse(FileInfoStringInfo);
-      console.log(infoObject,'infoObject');
-      
-      infoObject[infoObject.length] = {[route.params.screen]:Info};
 
-      const addInfo = await FileSystem.writeFile(
-        Dirs.CacheDir + '/Info.txt',
-        JSON.stringify(infoObject),
+      
+      let orderArray = JSON.parse(FileOrder);
+      orderArray[orderArray.length] = {[route.params.screen]:Info};
+      console.log(orderArray,'orderArray');
+      
+      
+      const addOrder = await FileSystem.writeFile(
+        Dirs.CacheDir + '/order.txt',
+        JSON.stringify(orderArray),
         'utf8',
       );
     } else {
       const addContent = await FileSystem.writeFile(
-        Dirs.CacheDir + '/Content.txt',
-        JSON.stringify({[route.params.screen]: Content}),
+        Dirs.CacheDir + '/downloaded.txt',
+        JSON.stringify({[route.params.screen]: {'Content':Content,'Info':Info}}),
         'utf8',
       );
 
       const addInfo = await FileSystem.writeFile(
-        Dirs.CacheDir + '/Info.txt',
-        JSON.stringify([{[route.params.screen]: Info}]),
+        Dirs.CacheDir + '/order.txt',
+        JSON.stringify([{[route.params.screen]:Info}]),
         'utf8',
       );
     }
 
-    const FileInfoStringContent1 = await FileSystem.readFile(
-      Dirs.CacheDir + '/Content.txt',
-      'utf8',
-    );
-    let contentObject = JSON.parse(FileInfoStringContent1);
+    // const FileInfoStringContent1 = await FileSystem.readFile(
+    //   Dirs.CacheDir + '/Content.txt',
+    //   'utf8',
+    // );
+    // let contentObject = JSON.parse(FileInfoStringContent1);
 
-    const FileInfoStringInfo1 = await FileSystem.readFile(
-      Dirs.CacheDir + '/Info.txt',
-      'utf8',
-    );
-    let infoObject = JSON.parse(FileInfoStringInfo1);
+    // const FileInfoStringInfo1 = await FileSystem.readFile(
+    //   Dirs.CacheDir + '/Info.txt',
+    //   'utf8',
+    // );
+    // let infoObject = JSON.parse(FileInfoStringInfo1);
   }
 
   async function DeleteInternal() {
     const FileInfoStringContent = await FileSystem.readFile(
-      Dirs.CacheDir + '/Content.txt',
+      Dirs.CacheDir + '/downloaded.txt',
       'utf8',
     );
     let contentObject = JSON.parse(FileInfoStringContent);
     delete contentObject[route.params.screen];
 
     const addContent = await FileSystem.writeFile(
-      Dirs.CacheDir + '/Content.txt',
+      Dirs.CacheDir + '/downloaded.txt',
       JSON.stringify(contentObject),
       'utf8',
     );
 
-    const FileInfoStringInfo = await FileSystem.readFile(
-      Dirs.CacheDir + '/Info.txt',
+    const FileOrder = await FileSystem.readFile(
+      Dirs.CacheDir + '/order.txt',
       'utf8',
     );
-    let infoObject = JSON.parse(FileInfoStringInfo);
-    delete infoObject[route.params.screen];
+    let orderArray = JSON.parse(FileOrder);
+    const NewOrderArray = orderArray.filter(item => Object.keys(item)[0] !== route.params.screen);
 
     const addInfo = await FileSystem.writeFile(
-      Dirs.CacheDir + '/Info.txt',
-      JSON.stringify(infoObject),
+      Dirs.CacheDir + '/order.txt',
+      JSON.stringify(NewOrderArray),
       'utf8',
     );
   }
@@ -274,20 +278,20 @@ export default function Detail() {
   }, [exists]);
 
   async function getContentExist() {
-    if (await FileSystem.exists(Dirs.CacheDir + '/Content.txt', 'utf8')) {
-      const FileInfoStringContent = await FileSystem.readFile(
-        Dirs.CacheDir + '/Content.txt',
+    if (await FileSystem.exists(Dirs.CacheDir + '/downloaded.txt', 'utf8')) {
+      const FileDownloaded = await FileSystem.readFile(
+        Dirs.CacheDir + '/downloaded.txt',
         'utf8',
       );
-      const FileInfoStringInfo = await FileSystem.readFile(
-        Dirs.CacheDir + '/Info.txt',
-        'utf8',
-      );
-      if (FileInfoStringContent) {
+      // const FileInfoStringInfo = await FileSystem.readFile(
+      //   Dirs.CacheDir + '/Info.txt',
+      //   'utf8',
+      // );
+      if (FileDownloaded) {
         return {
           _id: route.params.screen,
-          content: JSON.parse(FileInfoStringContent),
-          info: JSON.parse(FileInfoStringInfo),
+          all: JSON.parse(FileDownloaded),
+          // info: JSON.parse(FileDownloaded.Info),
         };
         // f = JSON.parse(FileInfoStringInfo)
       }
@@ -298,13 +302,13 @@ export default function Detail() {
     getContentExist().then(cont => {
       if (
         cont &&
-        Object.keys({...cont.info}).includes(
+        Object.keys(cont.all).includes(
           route.params.screen,
         )
       ) {
-        setInfo({...cont.info}[route.params.screen]);
+        setInfo(cont[route.params.screen].info);
         setContent(
-          { ...cont.content}[route.params.screen],
+          cont[route.params.screen].content
         );
       } 
       // else if (Object.keys(dataOrg['info']).includes(route.params.screen)) {

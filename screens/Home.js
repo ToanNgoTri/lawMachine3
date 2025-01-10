@@ -10,13 +10,13 @@ import {
   ScrollView
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
-import dataOrg from '../data/data.json';
+// import dataOrg from '../data/data.json';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Dirs, FileSystem} from 'react-native-file-access';
 import {useScrollToTop} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-// import { NestableScrollContainer, NestableDraggableFlatList } from "react-native-draggable-flatlist"
+// import { NestableScrollContainer, NestableDraggableFlatList ,ScaleDecorator} from "react-native-draggable-flatlist"
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
@@ -29,7 +29,7 @@ export default function Home({}) {
   const [Info, setInfo] = useState(false);
 
   const [inputSearchLaw, setInputSearchLaw] = useState('');
-  const [searchLawResult, setSearchLawResult] = useState([]);
+  // const [searchLawResult, setSearchLawResult] = useState([]);
   const [showPolicy, setShowPolicy] = useState(false);
   const [showBackground, setShowBackground] = useState(false)
   
@@ -42,7 +42,7 @@ export default function Home({}) {
   const Render = ({item, i,drag, isActive}) => {
 
     return (
-      // <ScaleDecorator>
+      <ScaleDecorator>
       <TouchableOpacity
       onLongPress={inputSearchLaw? null:drag}
       disabled={isActive}
@@ -57,8 +57,9 @@ export default function Home({}) {
               :'green' 
               ,
           marginBottom: 6,
+          opacity:isActive?.5:1
         }}
-        onPress={() => navigation.navigate(`accessLaw`, {screen: item})}>
+        onPress={() => navigation.navigate(`accessLaw`, {screen: Object.keys(item)[0]})}>
         <View style={styles.item}>
           <Text
             style={{
@@ -81,7 +82,7 @@ export default function Home({}) {
             )}
         </View>
       </TouchableOpacity>
-      // </ScaleDecorator>
+      </ScaleDecorator>
     );
   };
 
@@ -132,53 +133,55 @@ export default function Home({}) {
     // );
   
     if(inputSearchLaw){
-      // setData(
-      //   Info &&
-      //     Object.keys(Info).filter(item => {
-      //       if (
-      //         inputSearchLaw.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\s?)/gim)
-      //       ) {
-      //         let inputSearchLawReg = inputSearchLaw;
-      //         if (inputSearchLaw.match(/\(/gim)) {
-      //           inputSearchLawReg = inputSearchLaw.replace(/\(/gim, '\\(');
-      //         }
+      setData(
+        Info &&
+          Info.filter(item => {
+            if (
+              inputSearchLaw.match(/(\w+|\(|\)|\.|\+|\-|\,|\&|\?|\;|\!|\s?)/gim)
+            ) {
+              let inputSearchLawReg = inputSearchLaw;
+              if (inputSearchLaw.match(/\(/gim)) {
+                inputSearchLawReg = inputSearchLaw.replace(/\(/gim, '\\(');
+              }
   
-      //         if (inputSearchLaw.match(/\)/gim)) {
-      //           inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
-      //         }
-      //         if (inputSearchLaw.match(/\//gim)) {
-      //           inputSearchLawReg = inputSearchLawReg.replace(/\//gim, '.');
-      //         }
-      //         if (inputSearchLaw.match(/\\/gim)) {
-      //           inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
-      //         }
-      //         if (inputSearchLaw.match(/\./gim)) {
-      //           inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
-      //         }
-      //         if (inputSearchLaw.match(/\+/gim)) {
-      //           inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
-      //         }
-      //         if (inputSearchLaw.match(/\?/gim)) {
-      //           inputSearchLawReg = inputSearchLawReg.replace(/\?/gim, '\\?');
-      //         }
+              if (inputSearchLaw.match(/\)/gim)) {
+                inputSearchLawReg = inputSearchLawReg.replace(/\)/gim, '\\)');
+              }
+              if (inputSearchLaw.match(/\//gim)) {
+                inputSearchLawReg = inputSearchLawReg.replace(/\//gim, '.');
+              }
+              if (inputSearchLaw.match(/\\/gim)) {
+                inputSearchLawReg = inputSearchLawReg.replace(/\\/gim, '.');
+              }
+              if (inputSearchLaw.match(/\./gim)) {
+                inputSearchLawReg = inputSearchLawReg.replace(/\./gim, '\\.');
+              }
+              if (inputSearchLaw.match(/\+/gim)) {
+                inputSearchLawReg = inputSearchLawReg.replace(/\+/gim, '\\+');
+              }
+              if (inputSearchLaw.match(/\?/gim)) {
+                inputSearchLawReg = inputSearchLawReg.replace(/\?/gim, '\\?');
+              }
   
-      //         return (
-      //           Info[item]['lawNameDisplay'].match(
-      //             new RegExp(inputSearchLawReg, 'igm'),
-      //           ) ||
-      //           Info[item]['lawDescription'].match(
-      //             new RegExp(inputSearchLawReg, 'igm'),
-      //           ) ||
-      //           Info[item]['lawNumber'].match(
-      //             new RegExp(inputSearchLawReg, 'igm'),
-      //           )
-      //         );
-      //       }
-      //     })
-      // );
-      }
-
+              return (
+                Object.values(item)[0]['lawNameDisplay'].match(
+                  new RegExp(inputSearchLawReg, 'igm'),
+                ) ||
+                Object.values(item)[0]['lawDescription'].match(
+                  new RegExp(inputSearchLawReg, 'igm'),
+                ) ||
+                Object.values(item)[0]['lawNumber'].match(
+                  new RegExp(inputSearchLawReg, 'igm'),
+                )
+              );
+            }
+          })
+      );
+     
       // DeleteInternal()
+
+    }
+
 
   
   }, [inputSearchLaw]);
@@ -188,35 +191,22 @@ export default function Home({}) {
     
 
     const addContent = await FileSystem.unlink(
-      Dirs.CacheDir + '/Content.txt'
+      Dirs.CacheDir + '/order.txt'
     );
 
+
+    const addDown = await FileSystem.unlink(
+      Dirs.CacheDir + '/downloaded.txt'
+    );
 
     const addInfo = await FileSystem.unlink(
       Dirs.CacheDir + '/Info.txt'
     );
+
   }
 
 
 
-// console.log('searchLawResult',searchLawResult);
-
-
-  // const UserSchema = {
-  //   name:'task',
-  //   properties:{
-  //     _id:'string',
-  //     info: 'string',
-  //     content: 'string',
-  //     }
-  // };
-
-  // const realmConfig = {
-  //   path: 'myrealm.realm',
-  //   schema: [UserSchema],
-  // };
-
-  // const realm = new Realm(realmConfig);
 
   async function getPolicyAppear() {
     if (await FileSystem.exists(Dirs.CacheDir + '/Appear.txt', 'utf8')) {
@@ -238,26 +228,25 @@ export default function Home({}) {
   }
 
   async function getContentExist() {
-    if (await FileSystem.exists(Dirs.CacheDir + '/Content.txt', 'utf8')) {
+    if (await FileSystem.exists(Dirs.CacheDir + '/order.txt', 'utf8')) {
       
       setShowBackground(false)
 
-      const FileInfoStringContent = await FileSystem.readFile(
-        Dirs.CacheDir + '/Content.txt',
+      // const FileInfoStringDownloaded = await FileSystem.readFile(
+      //   Dirs.CacheDir + '/downloaded.txt',
+      //   'utf8',
+      // );
+      const FileOrder = await FileSystem.readFile(
+        Dirs.CacheDir + '/order.txt',
         'utf8',
       );
-      const FileInfoStringInfo = await FileSystem.readFile(
-        Dirs.CacheDir + '/Info.txt',
-        'utf8',
-      );
-      console.log('FileInfoStringInfo',FileInfoStringInfo);
+      // console.log('FileOrder',FileOrder);
 
-      if (FileInfoStringContent) {
+      if (FileOrder) {
         return {
-          content: JSON.parse(FileInfoStringContent),
-          info: JSON.parse(FileInfoStringInfo),
+          // content: JSON.parse(FileInfoStringDownloaded.Content),
+          order: JSON.parse(FileOrder),
         };
-        // f = JSON.parse(FileInfoStringInfo)
       }
     }else{
     setShowBackground(true)
@@ -272,22 +261,25 @@ export default function Home({}) {
       setInputSearchLaw('')
 
       getContentExist().then(cont => {
-      if(!Object.keys(cont.content).length){
+      if(!Object.keys(cont.order).length){
         setShowBackground(true)
       }else{
         setShowBackground(false)
       }
 
+      // console.log('cont',cont);
         if (cont) {
-          // setInfo({...cont.info});
-          let c = []
-          cont.info.map( (item)=>{
-            c.push(Object.keys(item)[0])
-          })
-          setData(cont.info)  
+          
+          setInfo(cont.order);
+
+          // let c = []
+          // cont.order.map( (item)=>{
+          //   c.push(Object.keys(item)[0])
+          // })
+          setData(cont.order)  
 
         } else {
-          // setInfo({});
+          setInfo({});
           setData([]);
         }
       });
@@ -314,18 +306,20 @@ export default function Home({}) {
 
   const [data, setData] = useState([]);
 
-function sortedData(){
+async function sortedData(data){
 
 
-  getContentExist().then(cont => {
+  const addInfo = await FileSystem.writeFile(
+    Dirs.CacheDir + '/order.txt',
+    JSON.stringify(data),
+    'utf8',
+  );
 
-console.log(cont);
+// console.log('new data',data );
 
-    
-  })
 }  
   
-  console.log('data',data);
+  // console.log('data',data);
   
   
   return (
@@ -407,26 +401,25 @@ console.log(cont);
 :(
 //   <NestableScrollContainer>
 //   <NestableDraggableFlatList
-//   // ref={ScrollViewToScroll}
 //   style={{backgroundColor: '#EEEFE4'}}
 //   keyboardShouldPersistTaps="handled"
 //   // data={Info && (searchLawResult || Object.keys(Info))}
 //   data={data}
 //   renderItem={Render}
-//   onDragEnd={({ data }) => setData(data)}
-// keyExtractor={(item) => item}  
+//   keyExtractor={(item) => Object.keys(item)[0]}
+//   onDragEnd={({ data }) => { setData(data);sortedData(data)}}
 // />
 //   </NestableScrollContainer>
 
 
   <DraggableFlatList
-  // style={{backgroundColor: '#EEEFE4'}}
-  // keyboardShouldPersistTaps="handled"
+  style={{backgroundColor: '#EEEFE4'}}
+  keyboardShouldPersistTaps="handled"
   // data={Info && (searchLawResult || Object.keys(Info))}
   data={data}
   renderItem={Render}
-  keyExtractor={(item) => Object.keys(item)}
-  onDragEnd={({ data }) => {setData(data),sortedData(data)}}
+  keyExtractor={(item) => Object.keys(item)[0]}
+  onDragEnd={({ data }) => { setData(data);sortedData(data)}}
 />
 
 // <FlatList

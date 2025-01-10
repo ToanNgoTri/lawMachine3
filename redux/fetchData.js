@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {combineReducers} from 'redux'
 // import {call,put,takeEvery} from 'redux-saga'
-import dataOrg from '../data/data.json';       ////////////////////////////////////////////// xài tạm
+// import dataOrg from '../data/data.json';       ////////////////////////////////////////////// xài tạm
 import { call,put,takeEvery,take,takeLatest } from 'redux-saga/effects';
-import { Dirs, FileSystem } from 'react-native-file-access';
+// import { Dirs, FileSystem } from 'react-native-file-access';
 
 
 export const read = createSlice({
@@ -36,7 +36,7 @@ export const read = createSlice({
 export const searchContent = createSlice({
   name: 'searchContent',     
   initialState: {
-    data1:dataOrg,
+    data1:{},
     loading1: false,
     result:false
   },
