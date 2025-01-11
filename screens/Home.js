@@ -16,10 +16,9 @@ import {Dirs, FileSystem} from 'react-native-file-access';
 import {useScrollToTop} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-// import { NestableScrollContainer, NestableDraggableFlatList ,ScaleDecorator} from "react-native-draggable-flatlist"
-import DraggableFlatList, {
-  ScaleDecorator,
-} from "react-native-draggable-flatlist";
+// import DraggableFlatList, {
+//   ScaleDecorator,
+// } from "react-native-draggable-flatlist";
 
 
 export default function Home({}) {
@@ -42,7 +41,7 @@ export default function Home({}) {
   const Render = ({item, i,drag, isActive}) => {
 
     return (
-      <ScaleDecorator>
+      // <ScaleDecorator>
       <TouchableOpacity
       onLongPress={inputSearchLaw? null:drag}
       disabled={isActive}
@@ -82,7 +81,7 @@ export default function Home({}) {
             )}
         </View>
       </TouchableOpacity>
-      </ScaleDecorator>
+      // </ScaleDecorator>
     );
   };
 
@@ -412,23 +411,24 @@ async function sortedData(data){
 //   </NestableScrollContainer>
 
 
-  <DraggableFlatList
-  style={{backgroundColor: '#EEEFE4'}}
-  keyboardShouldPersistTaps="handled"
-  // data={Info && (searchLawResult || Object.keys(Info))}
-  data={data}
-  renderItem={Render}
-  keyExtractor={(item) => Object.keys(item)[0]}
-  onDragEnd={({ data }) => { setData(data);sortedData(data)}}
-/>
+//   <DraggableFlatList
+//   style={{backgroundColor: '#EEEFE4'}}
+//   keyboardShouldPersistTaps="handled"
+//   // data={Info && (searchLawResult || Object.keys(Info))}
+//   data={data}
+//   renderItem={Render}
+//   keyExtractor={(item) => Object.keys(item)[0]}
+//   onDragEnd={({ data }) => { setData(data);sortedData(data)}}
+// />
 
-// <FlatList
-// ref={ScrollViewToScroll}
-// style={{backgroundColor: '#EEEFE4'}}
-// keyboardShouldPersistTaps="handled"
+<FlatList
+ref={ScrollViewToScroll}
+style={{backgroundColor: '#EEEFE4'}}
+keyboardShouldPersistTaps="handled"
 // data={Info && (searchLawResult || Object.keys(Info))}
-// renderItem={Render}
-// ></FlatList> 
+data={data}
+renderItem={Render}
+></FlatList> 
 
 )
         }
